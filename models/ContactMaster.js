@@ -23,7 +23,7 @@ const ContactMasterSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  clientName: {
+  client: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "ClientMaster",
   },
@@ -58,18 +58,11 @@ const ContactMasterSchema = new mongoose.Schema({
       "Detractor",
       "Generic",
     ],
+    default : "Generic"
   },
   relationshipDegree: {
-    type: {
-      type: Object,
-      enum: [
-        { type: "0th degree", description: "passive relationship" },
-        { type: "1st degree", description: "very close" },
-        { type: "2nd degree", description: "known us" },
-        { type: "3rd degree", description: "connected through someone" },
-        { type: "Estranged", description: "" },
-      ],
-    },
+    type : mongoose.Schema.Types.ObjectId,
+    ref : "RelationshipDegree"
   },
   city: {
     type: String,
