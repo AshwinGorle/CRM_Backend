@@ -1,96 +1,96 @@
 import mongoose, { Mongoose } from "mongoose";
 
 const ClientMasterSchema = new mongoose.Schema({
-    name : {
-        type : String,
-        require : true
+    name: {
+        type: String,
+        require: true
     },
-    entryDate : {
-        type : Date,
-        required : true
+    entryDate: {
+        type: Date,
+        required: true
     },
-    enteredBy : {
-        type : mongoose.Schema.Types.ObjectId,
-        required : true,
-        ref : "TeamMaster"
+    enteredBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: "TeamMaster"
     },
-    Offering : {
-        type : "String"
+    Offering: {
+        type: String
     },
-    annualRevenue : {
-        type : Number
+    annualRevenue: {
+        type: Number
     },
-    itEmployeeStrength : {
-        type : Number
+    itEmployeeStrength: {
+        type: Number
     },
-    totalEmployeeStrength : {
-        type : Number
+    totalEmployeeStrength: {
+        type: Number
     },
-    PursuedOpportunityValue :{
+    PursuedOpportunityValue: {
         // Yet to derive
     },
-    industry : {
-        type : mongoose.Schema.Types.ObjectId,
-        required : true,
-        ref : "IndustryMaster"
+    industry: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: "IndustryMaster"
     },
-    subIndustry : {
-        type : mongoose.Schema.Types.ObjectId,
-        required : true,
-        ref : "SubIndustryMaster"
+    subIndustry: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: "SubIndustryMaster"
     },
-    territory :{
-        type : mongoose.Schema.Types.ObjectId,
-        required : true,
-        ref : "TerritoryMaster"
+    territory: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: "TerritoryMaster"
     },
-    incorporationType : {
-        type : String,
-        required : true,
-        enum : ["Independent", "Subsidiary", "Holding", "Government body", "Semi Government", "NGO", "Ministry", "Family Owned", "Employee Owned"]
+    incorporationType: {
+        type: String,
+        required: true,
+        enum: ["Independent", "Subsidiary", "Holding", "Government body", "Semi Government", "NGO", "Ministry", "Family Owned", "Employee Owned"]
     },
-    listedCompany : {
-        type : Boolean
+    listedCompany: {
+        type: Boolean
     },
-    marketCap : {
-        type : String,
+    marketCap: {
+        type: String,
     },
-    annualRevenue :{
-        type : String,
-        RegExp : '^\d+(\.\d+)?\s?([KkLlMmCc][Rr])?$'
+    annualRevenue: {
+        type: String,
+        RegExp: '^\d+(\.\d+)?\s?([KkLlMmCc][Rr])?$'
     },
-    classification : {
-            type : String,
-            required : true
-            // enum : ["Platinum", "Gold", "Silver", "Copper", "Bronze", "Nickel"]
+    classification: {
+        type: String,
+        required: true
+        // enum : ["Platinum", "Gold", "Silver", "Copper", "Bronze", "Nickel"]
     },
-    primaryRelationShip : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : "TeamMaster"
+    primaryRelationShip: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "TeamMaster"
     },
-    secondaryRelationShip : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : "TeamMaster"
+    secondaryRelationShip: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "TeamMaster"
     },
-    relationShipStatus : {
-           type : String,
-           enum : ["Well entrenched", ""]
+    relationShipStatus: {
+        type: String,
+        enum: ["Well entrenched", ""]
     },
-    relatedContacts : {
-        type : String
+    relatedContacts: {
+        type: String
     },
-    lifeTimeValue : {
+    lifeTimeValue: {
         //yet to be calculated
     },
-    priority : {
-        type : String,
-        enum : ["Very High", "High", "Medium", "Low"]
+    priority: {
+        type: String,
+        enum: ["Very High", "High", "Medium", "Low"]
     }
 
 
-     
-    
+
+
 })
 
-const ClientMasterModel = new mongoose.model("ClientMaster",ClientMasterSchema);
+const ClientMasterModel = new mongoose.model("ClientMaster", ClientMasterSchema);
 export default ClientMasterModel;
