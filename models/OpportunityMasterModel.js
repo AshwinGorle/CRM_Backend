@@ -1,0 +1,89 @@
+import mongoose from "mongoose";
+
+const OpportunityMasterSchema = new mongoose.Schema({
+  customId: {
+    type: String,
+    required: true,
+  },
+  entryDate: {
+    type: Date,
+    required: true,
+  },
+  enteredBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: "TeamMaster",
+  },
+  client: {
+    type: String,
+  },
+  partneredWith: {
+    type: String,
+  },
+  projectName: {
+    type: String,
+    required: true,
+  },
+  associatedTender: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref : "TenderMaster"
+  },
+  solution: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref : "SolutionMaster"
+  },
+  subSolution: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref : "SubSolutionMaster"
+  },
+  salesChamp: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref : "TeamMaster"
+  },
+  /////////////
+  salesStage : {
+    type: mongoose.Schema.Types.ObjectId,
+    ref : "SalesStageMaster"
+  },
+  salesSubStage : {
+    type: mongoose.Schema.Types.ObjectId,
+    ref : "SalesSubStageMaster"
+  },
+  stageClarification : {
+    type: String,
+    required: true,
+  },
+  /////////////
+  
+  //salesTopLine derived
+  salesTopLine : {
+     type : Number,
+  },
+  
+  offsets : {
+    type: Number,
+  },
+
+  revenue : [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref : "RevenueMaster"
+  }],
+  
+  //totalRevenue    derived
+
+  confidenceLevel : {
+    type : Number,
+    enum: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+    default : 0
+  },
+
+  //Expected Sales derived
+  //confidence * totalRevenue
+
+});
+
+const OpportunityMasterModel = new mongoose.model(
+  "OpportunityMaster",
+  OpportunityMasterSchema
+);
+export default OpportunityMasterModel;
