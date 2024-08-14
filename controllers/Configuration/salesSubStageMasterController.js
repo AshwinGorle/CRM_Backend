@@ -4,8 +4,8 @@ import { ServerError } from "../../utils/customErrorHandler.utils.js";
 class SalesSubStageMasterController {
     // Create SalesSubStageMaster
     static createSalesSubStageMaster = catchAsyncError(async (req, res, next) => {
-        const { name, salesStage, description } = req.body;
-        const newSalesSubStageMaster = await SalesSubStageMasterModel.create({ name, salesStage, description });
+        const { label, salesStage, description } = req.body;
+        const newSalesSubStageMaster = await SalesSubStageMasterModel.create({ label, salesStage, description });
         res.status(201).json({
             status: 'success',
             message: 'Sales Sub-Stage Master created successfully',
