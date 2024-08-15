@@ -1,7 +1,13 @@
 const homePage = (req,res)=>{
-    res.send({
-        message : "shree ganesh"
-    })
+    try {
+        res.send({
+            message : "shree ganesh"
+        })
+        // Your function logic
+      } catch (error) {
+        console.error('Error occurred:', error);
+        return res.send({ message: 'Internal Server Error', error });
+      }
 }
 
 export default homePage;
