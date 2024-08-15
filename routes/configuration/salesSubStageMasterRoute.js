@@ -1,5 +1,5 @@
 import { Router } from "express";
-import SalesSubStageMasterController from '../../controllers/Configuration/salesSubStageMasterController'
+import SalesSubStageMasterController from '../../controllers/Configuration/salesSubStageMasterController.js'
 const salesSubStageMasterRouter = Router();
 
  salesSubStageMasterRouter.get('/', SalesSubStageMasterController.getAllSalesSubStageMasters);
