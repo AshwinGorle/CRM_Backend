@@ -16,7 +16,7 @@ const TenderMasterSchema = new mongoose.Schema({
     enteredBy: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: "TeamMaster",
+        ref: "Staff",
     },
     submissionDueDate: {
         type: Date,
@@ -60,11 +60,11 @@ const TenderMasterSchema = new mongoose.Schema({
     },
     officer: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "TeamMaster",
+        ref: "Staff",
     },
     bidManager: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "TeamMaster",
+        ref: "Staff",
     },
     stage: {
         type: mongoose.Schema.Types.ObjectId,

@@ -12,7 +12,7 @@ const OpportunityMasterSchema = new mongoose.Schema({
   enteredBy: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: "TeamMaster",
+    ref: "Staff",
   },
   client: {
     type: String,
@@ -38,7 +38,7 @@ const OpportunityMasterSchema = new mongoose.Schema({
   },
   salesChamp: {
     type: mongoose.Schema.Types.ObjectId,
-    ref : "TeamMaster"
+    ref : "Staff"
   },
   /////////////
   salesStage : {

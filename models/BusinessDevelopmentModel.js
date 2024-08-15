@@ -1,6 +1,6 @@
 import mongoose, { Mongoose } from "mongoose";
 
-const BusinessDevelopmentMasterSchema = new mongoose.Schema({
+const BusinessDevelopmentSchema = new mongoose.Schema({
     client: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "ClientMaster"
@@ -12,7 +12,7 @@ const BusinessDevelopmentMasterSchema = new mongoose.Schema({
     enteredBy: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: "TeamMaster"
+        ref: "Staff"
     },
     contact: {
         type: mongoose.Schema.Types.ObjectId,
@@ -57,5 +57,5 @@ const BusinessDevelopmentMasterSchema = new mongoose.Schema({
 
 })
 
-const BusinessDevelopmentMasterModel = new mongoose.model("BusinessDevelopmentMaster", BusinessDevelopmentMasterSchema);
-export default BusinessDevelopmentMasterModel;
+const BusinessDevelopmentModel = new mongoose.model("BusinessDevelopment", BusinessDevelopmentSchema);
+export default BusinessDevelopmentModel;

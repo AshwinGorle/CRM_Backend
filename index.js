@@ -9,6 +9,8 @@ import tenderMasterRouter from './routes/tender/tenderMasterRoute.js';
 import registrationMasterRouter from './routes/registration/registrationMasterRouter.js';
 import configurationRoute from './routes/configuration/configurationRoute.js';
 import teamRouter from './routes/team/teamRouter.js';
+import businessDevelopmentRouter from './routes/business Development/businessDevelomentRoute.js';
+import opportunityRouter from './routes/opportunity/opportunityRoute.js'
 const app = express();
 dotenv.config();
 const corsOptions = {
@@ -27,7 +29,9 @@ connectDb(DB_URL);
 app.use('/client', clientMasterRouter);
 app.use('/team', teamRouter );
 app.use('/contact', contactMasterRouter);
+app.use('/bd', businessDevelopmentRouter);
 app.use('/tender',tenderMasterRouter);
+app.use('/opportunity', opportunityRouter);
 app.use('/registration', registrationMasterRouter);
 app.use('/configuration', configurationRoute);
 app.use(error);

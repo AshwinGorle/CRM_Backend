@@ -13,12 +13,12 @@ const RegistrationMasterSchema = new mongoose.Schema({
     enteredBy: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: "TeamMaster"
+        ref: "Staff"
     },
     registrationChamp: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: "TeamMaster"
+        ref: "Staff"
     },
     status: {
         type: String,
