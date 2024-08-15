@@ -11,6 +11,7 @@ import configurationRoute from '../routes/configuration/configurationRoute.js';
 import teamRouter from '../routes/team/teamRouter.js';
 import businessDevelopmentRouter from '../routes/business Development/businessDevelomentRoute.js';
 import opportunityRouter from '../routes/opportunity/opportunityRoute.js'
+import homePage from './home.js';
 const app = express();
 dotenv.config();
 const corsOptions = {
@@ -25,7 +26,7 @@ app.use(express.json());
 const PORT = process.env.PORT || 5000;
 const DB_URL = process.env.DATABASE_URL; 
 connectDb(DB_URL);
-
+app.get('/',homePage);
 app.use('/client', clientMasterRouter);
 app.use('/team', teamRouter );
 app.use('/contact', contactMasterRouter);
