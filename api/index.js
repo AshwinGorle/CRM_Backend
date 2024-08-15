@@ -1,16 +1,16 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import clientMasterRouter from './routes/client/clientMasterRoute.js';
-import connectDb from "./connectDb.js"
-import { error } from './middlewares/error.middleware.js';
+import clientMasterRouter from '../routes/client/clientMasterRoute.js';
+import connectDb from "../connectDb.js"
+import { error } from '../middlewares/error.middleware.js';
 import cors from 'cors';
-import contactMasterRouter from './routes/contact/contactMasterRoute.js';
-import tenderMasterRouter from './routes/tender/tenderMasterRoute.js';
-import registrationMasterRouter from './routes/registration/registrationMasterRouter.js';
-import configurationRoute from './routes/configuration/configurationRoute.js';
-import teamRouter from './routes/team/teamRouter.js';
-import businessDevelopmentRouter from './routes/business Development/businessDevelomentRoute.js';
-import opportunityRouter from './routes/opportunity/opportunityRoute.js'
+import contactMasterRouter from '../routes/contact/contactMasterRoute.js';
+import tenderMasterRouter from '../routes/tender/tenderMasterRoute.js';
+import registrationMasterRouter from '../routes/registration/registrationMasterRouter.js';
+import configurationRoute from '../routes/configuration/configurationRoute.js';
+import teamRouter from '../routes/team/teamRouter.js';
+import businessDevelopmentRouter from '../routes/business Development/businessDevelomentRoute.js';
+import opportunityRouter from '../routes/opportunity/opportunityRoute.js'
 const app = express();
 dotenv.config();
 const corsOptions = {
