@@ -4,7 +4,28 @@ import { catchAsyncError } from "../../middlewares/catchAsyncError.middleware.js
 import ClientMasterModel from  "../../models/ClientMasterModel.js"
 import { getClient } from "../../utils/client.utils.js";
 import { ServerError } from "../../utils/customErrorHandler.utils.js";
+import OpportunityMasterModel from "../../models/OpportunityMasterModel.js" 
 class ClientMasterController {
+    static getLifetimeValue = async (clientId)=>{
+       console.log("entered")
+       const opportunities = await OpportunityMasterModel.find({client : clientId}).populate("revenue salesSubStage" );
+       console.log("opportunities ", opportunities);
+       if(opportunities.length == 0 ) return "Oppor.. not Available!"
+       const lifeTimeValue = opportunities.reduce((acc, opportunity)=>{
+            console.log("Includes : ", opportunity?.salesSubStage?.label )
+            if(opportunity?.salesSubStage?.label == "Won - 6"){
+                return acc + opportunity?.revenue?.reduce(
+                    (accumulator, current) => {
+                      return accumulator + current.Q1 + current.Q2 + current.Q3 + current.Q4;
+                    },
+                    0
+                  );
+            }
+            return acc + 0;
+        }, 0);
+        return lifeTimeValue;
+    }
+
     static createClient = catchAsyncError(async (req, res, next) => {
         console.log("Request Body:", req.body);
         let {
@@ -103,7 +124,7 @@ class ClientMasterController {
         message: 'All Client Masters retrieved successfully',
         data: clientMasters,
     });
-});
+  });
 
 static getClientById = catchAsyncError(async (req, res, next) => {
     const { id } = req.params;
@@ -117,7 +138,10 @@ static getClientById = catchAsyncError(async (req, res, next) => {
         .populate("primaryRelationShip")
         .populate("secondaryRelationShip")
         .populate("relationShipStatus");
+
     if (!client) throw new ServerError("NotFound", "Client");
+    client.lifeTimeValue = await this.getLifetimeValue(client._id);
+    console.log("lifeTimeValue : ", client.lifeTimeValue);
     res.status(200).json({
         status: 'success',
         message: 'Client retrieved successfully',

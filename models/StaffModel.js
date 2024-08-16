@@ -10,6 +10,22 @@ const StaffSchema = new mongoose.Schema({
         type : String,
         require : true
     },
+    email : {
+        type : String,
+        require : true
+    },
+    phone : {
+        type : String,
+        require : true
+    },
+    address : {
+        type : String,
+        require : true
+    },
+    role : {
+        type : String,
+        default : "staff"
+    },
     teams : [{
         type : mongoose.Schema.Types.ObjectId,
         ref : 'Team',

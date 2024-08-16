@@ -61,10 +61,6 @@ export const ClientMasterSchema = new mongoose.Schema({
     itEmployeeStrength : {
         type : Number
     },
-    // annualRevenue :{
-    //     type : String,
-    //     RegExp : '^\d+(\.\d+)?\s?([KkLlMmCc][Rr])?$'
-    // },
     primaryRelationShip : {
         type : mongoose.Schema.Types.ObjectId,
         ref : "Staff"
@@ -81,7 +77,8 @@ export const ClientMasterSchema = new mongoose.Schema({
         ref : "RelationshipStatus"
     },
     lifeTimeValue : {
-        //yet to be calculated
+        type : String,
+        default : '0'
     },
     priority : {
         type : String,
@@ -90,7 +87,7 @@ export const ClientMasterSchema = new mongoose.Schema({
     detailsConfirmation : {
         type : Boolean,
         default : false
-      },
+    },
     
 },{timestamps : true});
 

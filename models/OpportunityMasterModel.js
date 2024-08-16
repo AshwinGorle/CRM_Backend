@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 const OpportunityMasterSchema = new mongoose.Schema({
   customId: {
     type: String,
-    required: true,
+    default : null
+    // required: true,
   },
   entryDate: {
     type: Date,
@@ -15,7 +16,8 @@ const OpportunityMasterSchema = new mongoose.Schema({
     ref: "Staff",
   },
   client: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref : 'ClientMaster'
   },
   partneredWith: {
     type: String,

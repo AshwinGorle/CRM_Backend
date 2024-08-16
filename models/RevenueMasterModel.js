@@ -5,21 +5,37 @@ const RevenueMasterSchema = new mongoose.Schema({
         type : Number,
         required : true
     },
+    // opportunity : {
+    //    type : mongoose.Schema.Types.ObjectId,
+    //    ref : 'OpportunityMaster',
+    //    required : true
+    // },
+    total:{
+        type : Number,
+        default : 0,
+        
+    },
     Q1 : {
         type : Number,
-        required : true
+        default : 0,
+        // required : true
     }, 
     Q2 : {
         type : Number,
-        required : true
+        default : 0,
+
+        // required : true
     }, 
     Q3 : {
         type : Number,
-        required : true
+        default : 0,
+
+        // required : true
     }, 
     Q4 : {
         type : Number,
-        required : true
+        default : 0,
+        // required : true
     }, 
 })
 

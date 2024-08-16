@@ -24,8 +24,8 @@ class StaffController{
     })
 
     static createStaff = catchAsyncError(async (req, res, next)=>{
-        const { firstName ,  lastName } = req.body;
-        const staff = await StaffModel.create({ firstName , lastName });
+        const { firstName ,  lastName , phone , email, address, role } = req.body;
+        const staff = await StaffModel.create({ firstName , lastName , phone , email, address, role});
         res.status(201).json({
             status: 'success',
             message: 'Staff created successfully',
@@ -36,6 +36,7 @@ class StaffController{
     static updateStaff = catchAsyncError(async(req, res, next)=>{
         const id = req.params.id;
         const staff = await StaffModel.findByIdAndUpdate(id, req.body, {new: true});
+        if(!staff) throw new ServerError("NotFound", "Staff");
         res.status(201).json({
             status: 'success',
             message: 'Staff updated successfully',

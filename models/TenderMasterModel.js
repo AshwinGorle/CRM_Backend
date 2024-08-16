@@ -1,9 +1,14 @@
+import { MongoGCPError } from "mongodb";
 import mongoose from "mongoose";
 
 const TenderMasterSchema = new mongoose.Schema({
     customId: {
         type: String,
-        required: true,
+        default : null,
+    },
+    opportunity : {
+        type: mongoose.Schema.Types.ObjectId,
+        ref : "OpportunityMaster"
     },
     rfpDate: {
         type: Date,

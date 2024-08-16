@@ -9,6 +9,11 @@ export const error = (err, req, res, next)=>{
             err. message = `${err.message} not found !`
         }
     }
+    if(err.type == "ClientError"){
+        if(err.name == "AllRequired"){
+            err. message = `All fields required!`
+        }
+    }
 
     if(err.name === "TypeError"){       // I should make different part for dev
         err.message = "Internal server error"
