@@ -10,6 +10,13 @@ const StaffSchema = new mongoose.Schema({
         type : String,
         require : true
     },
+    gender : {
+        type : String,
+        enum : ["M", "F", "O"]
+    },
+    DOB : {
+        type : Date,
+    },
     email : {
         type : String,
         require : true

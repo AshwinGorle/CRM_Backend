@@ -78,7 +78,7 @@ export const ClientMasterSchema = new mongoose.Schema({
     },
     lifeTimeValue : {
         type : String,
-        default : '0'
+        default : "0"
     },
     priority : {
         type : String,

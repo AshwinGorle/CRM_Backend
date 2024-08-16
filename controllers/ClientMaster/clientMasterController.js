@@ -119,11 +119,17 @@ class ClientMasterController {
         .populate("primaryRelationShip")
         .populate("secondaryRelationShip")
         .populate("relationShipStatus");
+    
+    for(const client of clientMasters ){
+        client.lifeTimeValue = await this.getLifetimeValue(client._id);
+    }
+
     res.status(200).json({
         status: 'success',
         message: 'All Client Masters retrieved successfully',
         data: clientMasters,
     });
+
   });
 
 static getClientById = catchAsyncError(async (req, res, next) => {

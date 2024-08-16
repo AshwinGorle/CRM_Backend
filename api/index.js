@@ -12,6 +12,7 @@ import teamRouter from '../routes/team/teamRouter.js';
 import businessDevelopmentRouter from '../routes/business Development/businessDevelomentRoute.js';
 import opportunityRouter from '../routes/opportunity/opportunityRoute.js'
 import homePage from '../home.js';
+import uploadRouter from '../routes/upload/uloadTestRoute.js';
 const app = express();
 dotenv.config();
 const corsOptions = {
@@ -35,6 +36,7 @@ app.use('/tender',tenderMasterRouter);
 app.use('/opportunity', opportunityRouter);
 app.use('/registration', registrationMasterRouter);
 app.use('/configuration', configurationRoute);
+app.use('/upload', uploadRouter);
 app.use(error);
 
 app.listen(1234, ()=>{
