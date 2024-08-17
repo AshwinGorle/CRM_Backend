@@ -114,7 +114,10 @@ class ClientMasterController {
     
 
   static getAllClient = catchAsyncError(async (req, res, next) => {
-    const clientMasters = await ClientMasterModel.find()
+    const limit = parseInt(req.query.limit);
+    const page = parseInt(req.query.page);
+    const skip = (page-1)*limit;
+    const clientMasters = await ClientMasterModel.find().skip(skip).limit(limit)
         .populate("enteredBy")
         .populate("industry")
         .populate("subIndustry")

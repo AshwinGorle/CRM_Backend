@@ -43,7 +43,6 @@ class TestUploadController {
 
   static uploadData = async (req, res) => {
     const csvFilePath = req.file.path;
-
     const classificationMap = await ClassificationModel.find({}).then(
       (classifications) => {
         return classifications.reduce((acc, item) => {
@@ -107,6 +106,7 @@ class TestUploadController {
 
     const bulkData = await csv().fromFile(csvFilePath);
     let analysisResult = {};
+    
     const formattedData = bulkData.map((row, rowIdx) => {
       let formattedRow = {};
 
