@@ -5,8 +5,8 @@ import SubIndustryMasterModel from "../../models/Configuration/SubIndustryMaster
 class SubIndustryMasterController {
     // Create SubIndustryMaster
     static createSubIndustryMaster = catchAsyncError(async (req, res, next) => {
-        const { name, description } = req.body;
-        const newSubIndustryMaster = await SubIndustryMasterModel.create({ name, description });
+        const { label, description } = req.body;
+        const newSubIndustryMaster = await SubIndustryMasterModel.create({ label, description });
         res.status(201).json({
             status: 'success',
             message: 'Sub-Industry Master created successfully',

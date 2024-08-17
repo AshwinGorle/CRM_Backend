@@ -143,7 +143,7 @@ const SalesSubStage = [
 ];
 
 const TerritoryMaster = [
-  " Chennai SCR",
+  "Chennai SCR",
   "Tamil nadu - Others",
   "Bangalore SCR",
   "Karnataka - Others",
@@ -185,9 +185,9 @@ const Client = {
     "Well entrenched",
     "me relationships exists",
     "cently Delivered (within 12 months)",
-    " recent delivery",
+    "recent delivery",
     "trained Relationship",
-    " relationship",
+    "relationship",
   ],
 };
 
@@ -350,6 +350,7 @@ const deleteResource = async (route) => {
 
 // feedResource("sub-industry");
 // deleteResource("sub-industry")
+// feedResource("sub-industry")
 // feedResource("solution");
 // feedResource("sales-stage");
 // deleteResource("sales-stage");
@@ -359,6 +360,7 @@ const deleteResource = async (route) => {
 
 //client
 // feedResource("relationship-status");
+deleteResource("relationship-status");
 // feedResource("incorporation-type");
 // feedResource("classification");
 

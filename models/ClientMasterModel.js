@@ -5,6 +5,9 @@ export const ClientMasterSchema = new mongoose.Schema({
         type : String,
         require : true
     },
+    clientCode : {
+        type : "String"
+    },
     entryDate : {
         type : Date,
         required : true
@@ -24,7 +27,7 @@ export const ClientMasterSchema = new mongoose.Schema({
         // required : true,
         ref : "SubIndustryMaster"
     },
-    Offering : {
+    offering : {
         type : "String"
     },
     territory :{
@@ -32,9 +35,9 @@ export const ClientMasterSchema = new mongoose.Schema({
         // required : true,
         ref : "TerritoryMaster"
     },
-    PursuedOpportunityValue :{
-        // Yet to derive
-    },
+    // pursuedOpportunityValue :{
+    //     // Yet to derive
+    // },
     incorporationType : {
         type :  mongoose.Schema.Types.ObjectId,
         ref : "IncorporationType",
@@ -48,7 +51,7 @@ export const ClientMasterSchema = new mongoose.Schema({
         type : String,
     },
     annualRevenue : {
-        type : Number
+        type : String
     },
     classification : {
         type :  mongoose.Schema.Types.ObjectId,
@@ -84,10 +87,10 @@ export const ClientMasterSchema = new mongoose.Schema({
         type : String,
         enum : ["Very High", "High", "Medium", "Low"]
     },
-    detailsConfirmation : {
-        type : Boolean,
-        default : false
-    },
+    // detailsConfirmation : {
+    //     type : Boolean,
+    //     default : false
+    // },
     
 },{timestamps : true});
 

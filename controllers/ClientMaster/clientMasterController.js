@@ -6,6 +6,9 @@ import { getClient } from "../../utils/client.utils.js";
 import { ServerError } from "../../utils/customErrorHandler.utils.js";
 import OpportunityMasterModel from "../../models/OpportunityMasterModel.js" 
 class ClientMasterController {
+    static getClientId = ()=>{
+        return Array.from({ length: 6 }, () => String.fromCharCode(65 + Math.floor(Math.random() * 26))).join('');
+    } 
     static getLifetimeValue = async (clientId)=>{
        console.log("entered")
        const opportunities = await OpportunityMasterModel.find({client : clientId}).populate("revenue salesSubStage" );
@@ -73,9 +76,11 @@ class ClientMasterController {
         }
     
         console.log("entry date", entryDate);
+
     
         // Create a new instance of the ClientMasterModel
         const newClient = new ClientMasterModel({
+            clientCode : this.getClientId(),
             name,
             entryDate,
             enteredBy,
