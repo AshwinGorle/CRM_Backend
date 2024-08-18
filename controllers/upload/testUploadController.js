@@ -541,6 +541,8 @@ class UploadController {
     );
     console.log("analysis result ---", analysisResult);
     console.log("formatted data ---", formattedData);
+    console.log("bulk data---", bulkData);
+    res.send({data : bulkData})
     return
     if (Object.keys(analysisResult).length === 0) {
       console.log("directory name----");
@@ -599,7 +601,8 @@ class UploadController {
     );
     console.log("analysis result ---", analysisResult);
     console.log("formatted data ---", formattedData);
-   
+    console.log("bulk data------", bulkData);
+ 
     if (Object.keys(analysisResult).length === 0) {
       console.log("directory name----");
       const tenders = await TenderMasterModel.insertMany(formattedData);

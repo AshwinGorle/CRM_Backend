@@ -2,6 +2,10 @@ import { MongoGCPError } from "mongodb";
 import mongoose from "mongoose";
 
 const StaffSchema = new mongoose.Schema({
+    avatar : {
+        type : String,
+        default : ""
+    },
     firstName : {
         type : String,
         require : true

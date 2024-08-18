@@ -105,9 +105,9 @@ class ClientMasterController {
             priority,
             detailsConfirmation,
         });
+
         if(req.file){
-            const avatarUrl =  await uploadAndGetAvatarUrl(req);
-            console.log("client avatar url ", avatarUrl);
+            const avatarUrl =  await uploadAndGetAvatarUrl(req.file.path,'client',newClient._id );
             newClient.avatar = avatarUrl;
         }
     
@@ -180,8 +180,11 @@ static updateClient = catchAsyncError(async (req, res, next) => {
     Object.keys(updateData).forEach((key) => {
         client[key] = updateData[key];
     });
+    if(req.file){
+        client.avatar =  await uploadAndGetAvatarUrl(req.file.path,'client',client._id );
+    }
     const updatedClientMaster = await client.save();
-
+    
     res.status(200).json({
         status: 'success',
         message: 'Client updated successfully',

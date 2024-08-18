@@ -94,7 +94,7 @@ class TenderMasterController {
       .populate("associatedOpportunity")
       .populate("officer")
       .populate("bidManager")
-      .populate("stage");
+      .populate("tenderStage");
 
     res.status(200).json({
       status: "success",
@@ -113,7 +113,7 @@ class TenderMasterController {
       .populate("associatedOpportunity")
       .populate("officer")
       .populate("bidManager")
-      .populate("stage");
+      .populate("tenderStage");
 
     if (!tenderMaster) throw new ServerError("NotFound", "TenderMaster");
 
