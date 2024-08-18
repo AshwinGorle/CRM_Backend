@@ -543,7 +543,7 @@ class UploadController {
     console.log("formatted data ---", formattedData);
     console.log("bulk data---", bulkData);
     res.send({data : bulkData})
-    return
+  
     if (Object.keys(analysisResult).length === 0) {
       console.log("directory name----");
       const opportunities = await OpportunityMasterModel.insertMany(

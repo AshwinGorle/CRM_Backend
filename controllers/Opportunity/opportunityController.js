@@ -95,6 +95,13 @@ class OpportunityController {
     const limit = parseInt(req.query.limit) || 12;
     const page = parseInt(req.query.page) || 1;
     const skip = (page - 1) * limit;
+    const {config} = req.query;
+      if(Boolean(config)==true){
+        console.log('"entered in config ', Boolean(config))
+        const opportunities = await OpportunityMasterModel.find().select("customId");
+        return res.send({status : "success", message : "Config opportunities fetched successfully", data : { config : true ,  opportunities }});
+      }
+
     const totalCount = await OpportunityMasterModel.countDocuments();
     const { id } = req.params;
     const opportunities = await OpportunityMasterModel.find()
@@ -137,6 +144,7 @@ class OpportunityController {
   });
 
   static getOpportunityById = catchAsyncError(async (req, res, next) => {
+
     let opportunity = await OpportunityMasterModel.findById(id)
       .populate("enteredBy")
       .populate("associatedTender")

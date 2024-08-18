@@ -89,6 +89,11 @@ class ContactMasterController {
     const limit = parseInt(req.query.limit) || 12;
     const page = parseInt(req.query.page) || 1;
     const skip = (page - 1) * limit;
+    const {config} = req.query;
+    if(Boolean(config)==true){
+      const contacts = await ContactMasterModel.find().select("firstName lastName");
+      return res.send({status : "success", message : "Config contacts fetched successfully", data : { config : true ,  contacts }});
+    }
     const totalCount = await ContactMasterModel.countDocuments()
     const contacts = await ContactMasterModel.find()
       .limit(limit)

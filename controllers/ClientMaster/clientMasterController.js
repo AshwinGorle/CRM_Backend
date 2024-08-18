@@ -123,6 +123,13 @@ class ClientMasterController {
     const limit = parseInt(req.query.limit) || 12;
     const page = parseInt(req.query.page) || 1;
     const skip = (page-1)*limit;
+    const {config} = req.query;
+    
+    if(Boolean(config) == true){
+        console.log("config ture")
+        return
+    }
+    
     const totalCount = await ClientMasterModel.countDocuments();
     const clientMasters = await ClientMasterModel.find().skip(skip).limit(limit)
         .populate("enteredBy")

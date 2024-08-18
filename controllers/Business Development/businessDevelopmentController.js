@@ -71,7 +71,7 @@ class BusinessDevelopmentController {
       const page = parseInt(req.query.page) || 1;
       const skip = (page - 1) * limit;
       const totalCount = await BusinessDevelopmentModel.countDocuments();
-
+      
       const businessDevelopments = await BusinessDevelopmentModel.find().skip(skip).limit(limit)
         .populate("client")
         .populate("enteredBy")
