@@ -1,6 +1,9 @@
 import mongoose, { Mongoose } from "mongoose";
 
 export const ClientMasterSchema = new mongoose.Schema({
+    avatar : {
+        type : String
+    },
     name : {
         type : String,
         require : true

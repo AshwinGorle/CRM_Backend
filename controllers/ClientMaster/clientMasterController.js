@@ -5,6 +5,7 @@ import ClientMasterModel from  "../../models/ClientMasterModel.js"
 import { getClient } from "../../utils/client.utils.js";
 import { ServerError } from "../../utils/customErrorHandler.utils.js";
 import OpportunityMasterModel from "../../models/OpportunityMasterModel.js" 
+import uploadAndGetAvatarUrl from "../../utils/uploadAndGetAvatarUrl.utils.js";
 class ClientMasterController {
     static getClientId = ()=>{
         return Array.from({ length: 6 }, () => String.fromCharCode(65 + Math.floor(Math.random() * 26))).join('');
@@ -30,7 +31,7 @@ class ClientMasterController {
     }
 
     static createClient = catchAsyncError(async (req, res, next) => {
-        console.log("Request Body:", req.body);
+        
         let {
             name,
             entryDate,
@@ -104,6 +105,11 @@ class ClientMasterController {
             priority,
             detailsConfirmation,
         });
+        if(req.file){
+            const avatarUrl =  await uploadAndGetAvatarUrl(req);
+            console.log("client avatar url ", avatarUrl);
+            newClient[avatar] = avatarUrl;
+        }
     
         // Save the instance
         await newClient.save();
@@ -114,7 +120,7 @@ class ClientMasterController {
     
 
   static getAllClient = catchAsyncError(async (req, res, next) => {
-    const limit = parseInt(req.query.limit) || 10;
+    const limit = parseInt(req.query.limit) || 12;
     const page = parseInt(req.query.page) || 1;
     const skip = (page-1)*limit;
     const clientMasters = await ClientMasterModel.find().skip(skip).limit(limit)

@@ -1,12 +1,11 @@
 import { ServerError } from "../../utils/customErrorHandler.utils.js";
 import { catchAsyncError } from "../../middlewares/catchAsyncError.middleware.js";
-import StageModel from "../../models/ConfigModels/TenderMaster/StageModel.js";
-
+import TenderStageModel from "../../models/ConfigModels/TenderMaster/TenderStageModel.js";
 class TenderMasterConfigController{
      //---------------------stage-----------------------------------
     static createStage = catchAsyncError(async (req, res, next) => {
         const { label } = req.body;
-        const stage = await StageModel.create({ label });
+        const stage = await TenderStageModel.create({ label });
         res.status(201).json({
             status: "success",
             message: "Stage created successfully",
@@ -16,7 +15,7 @@ class TenderMasterConfigController{
 
     static getStageById = catchAsyncError(async (req, res, next) => {
         const { id } = req.params;
-        const stage = await StageModel.findById(id);
+        const stage = await TenderStageModel.findById(id);
         if (!stage) throw new ServerError("NotFound","stage");
         res.status(200).json({
             status: "success",
@@ -25,7 +24,7 @@ class TenderMasterConfigController{
     });
 
     static getAllStages = catchAsyncError(async (req, res, next) => {
-        const stages = await StageModel.find();
+        const stages = await TenderStageModel.find();
         res.status(200).json({
             status: "success",
             data: stages,
@@ -35,7 +34,7 @@ class TenderMasterConfigController{
     static updateStage = catchAsyncError(async (req, res, next) => {
         const { id } = req.params;
         const updateData = req.body;
-        const stage = await StageModel.findById(id);
+        const stage = await TenderStageModel.findById(id);
         if (!stage) throw new ServerError("NotFound","stage");
         Object.keys(updateData).forEach((key) => {
             stage[key] = updateData[key];
@@ -50,7 +49,7 @@ class TenderMasterConfigController{
 
     static deleteStage = catchAsyncError(async (req, res, next) => {
         const { id } = req.params;
-        const stage = await StageModel.findByIdAndDelete(id);
+        const stage = await TenderStageModel.findByIdAndDelete(id);
         if (!stage) throw new ServerError("NotFound","stage");
         res.status(200).json({
             status: "success",

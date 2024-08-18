@@ -20,6 +20,8 @@ import SolutionMasterModel from "../../models/Configuration/SolutionMaster.js";
 import SubSolutionMasterModel from "../../models/Configuration/SubSolutionMaster.js";
 import SalesStageMasterModel from "../../models/Configuration/SalesStageMaster.js";
 import SalesSubStageMasterModel from "../../models/Configuration/SalesSubStageMaster.js";
+import TenderStageModel from "../../models/ConfigModels/TenderMaster/TenderStageModel.js";
+import TenderMasterModel from "../../models/TenderMasterModel.js";
 // import { Readable } from 'stream'
 class UploadController {
   static clientFieldMapping = {
@@ -86,6 +88,32 @@ class UploadController {
     "CONFIDENCE LEVELS": "confidenceLevel",
     // Add other mappings if needed
   };
+
+  static tenderFieldMap = {
+    'RFP Rcvd Date': 'rfpDate',
+    'Tender #': 'customId',
+    'Entry Date': 'entryDate',
+    'Entered by': 'enteredBy',
+    'Submission Due Date': 'submissionDueDate',
+    'Time': 'submissionDueTime', // Assuming this is a time field
+    'Client Name': 'client',
+    'Tender Ref.': 'reference',
+    'Title of the RFP': 'rfpTitle',
+    'How did we recieve the RFP': 'rfpSource',
+    'ASSOCIATED OPPORTUNITY': 'associatedOpportunity',
+    'Tender Bond (Y/N)': 'bond',
+    'Tender Bond Value': 'bondValue',
+    'Tender Bond Issue Date': 'bondIssueDate',
+    'Tender Bond Valid until': 'bondExpiry',
+    'Submission Mode': 'submissionMode',
+    'Tender Evaluation Date': 'evaluationDate',
+    'Tender Officer': 'officer',
+    'Bid Manager': 'bidManager',
+    'Tender Stage': 'tenderStage',
+    'Explanation of Stage': 'stageExplanation',
+    'Submission Date': 'submissionDate'
+  };
+  
 
   static getFormattedData = async (bulkData, resource) => {
     const classificationMap = await ClassificationModel.find({}).then(
@@ -190,8 +218,8 @@ class UploadController {
     console.log("staff archtype map ----", archTypeMap);
 
     const relationshipDegreeMap = await RelationshipDegreeModel.find({}).then(
-      (RSDegree) => {
-        return RSDegree.reduce((acc, item) => {
+      (RSDegrees) => {
+        return RSDegrees.reduce((acc, item) => {
           acc[item.label] = item._id;
           return acc;
         }, {});
@@ -199,6 +227,13 @@ class UploadController {
     );
 
     console.log("staff relationship degree map ----", relationshipDegreeMap);
+
+    const tenderStageMap = await TenderStageModel.find({}).then((tenders)=>{
+      return tenders.reduce((acc, item)=>{
+            acc[item.label] = item._id;
+            return acc;
+      },{})
+    })
 
     let csvToModelMap = null;
 
@@ -211,6 +246,8 @@ class UploadController {
         break;
       case "opportunity":
         csvToModelMap = this.opportunityFieldMap;
+      case "tender":
+        csvToModelMap = this.tenderFieldMap;
         break;
     }
 
@@ -288,6 +325,18 @@ class UploadController {
             case "salesChamp":
               formattedRow[modelField] = staffMap[row[csvField]]; // Implement getSolutionIdByName function
               break;
+            case "officer":
+              formattedRow[modelField] = staffMap[row[csvField]]; // Implement getSolutionIdByName function
+              break;
+            case "bidManager":
+              formattedRow[modelField] = staffMap[row[csvField]]; // Implement getSolutionIdByName function
+              break;
+            case "tenderStage":
+              formattedRow[modelField] = tenderStageMap[row[csvField]]; // Implement getSolutionIdByName function
+              break;
+            case "associatedOpportunity":
+              formattedRow[modelField] = null; // Implement getSolutionIdByName function
+              break;
             default:
               formattedRow[modelField] = row[csvField];
           }
@@ -325,6 +374,12 @@ class UploadController {
         break;
       case "contact":
         csvToModelMap = this.contactFieldMap;
+        break;
+      case "opportunity":
+        csvToModelMap = this.opportunityFieldMap;
+        break;
+      case "tender":
+        csvToModelMap = this.tenderFieldMap;
         break;
     }
 
@@ -519,6 +574,62 @@ class UploadController {
       const correctionFilePath = await this.getCorrectionFile(
         bulkData,
         "contact",
+        analysisResult,
+        formattedData
+      );
+      console.log("correction file path", correctionFilePath);
+      res.download(correctionFilePath, "highlighted_output.xlsx", (err) => {
+        if (err) {
+          console.error(err);
+          res
+            .status(500)
+            .json({ status: "error", message: "Failed to download file" });
+        }
+      });
+    }
+  };
+  
+  static uploadTenderInBulk = async (req, res) => {
+    const csvFilePath = req.file.path;
+    const bulkData = await csv().fromFile(csvFilePath);
+    console.log("tender bulk data ", bulkData)
+    const { formattedData, analysisResult } = await this.getFormattedData(
+      bulkData,
+      "tender"
+    );
+    console.log("analysis result ---", analysisResult);
+    console.log("formatted data ---", formattedData);
+   
+    if (Object.keys(analysisResult).length === 0) {
+      console.log("directory name----");
+      const tenders = await TenderMasterModel.insertMany(formattedData);
+      console.log("all tenders", tenders);
+      const ids = tenders.map((tender) => tender._id.toString());
+      const csv = parse(ids.map((id) => ({ id })));
+      const tempUploadDir = path.join(process.cwd(), "tempUpload");
+      // Ensure the directory exists (create if it doesn't)
+      if (!fs.existsSync(tempUploadDir)) {
+        fs.mkdirSync(tempUploadDir);
+      }
+      const filePath = path.join(tempUploadDir, "filename.csv");
+      fs.writeFileSync(filePath, csv);
+      const uniqueName = new Date().toLocaleString();
+      const fileUrl = await uploadToCloudinary(
+        filePath,
+        "CRM/Tender/BulkUploads",
+        uniqueName,
+        2
+      );
+      fs.unlinkSync(filePath);
+      res.send({
+        status: "success",
+        message: "bulk import successful",
+        data: { file: fileUrl, tenders: tenders },
+      });
+    } else {
+      const correctionFilePath = await this.getCorrectionFile(
+        bulkData,
+        "tender",
         analysisResult,
         formattedData
       );

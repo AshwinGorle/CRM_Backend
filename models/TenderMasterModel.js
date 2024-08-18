@@ -2,17 +2,13 @@ import { MongoGCPError } from "mongodb";
 import mongoose from "mongoose";
 
 const TenderMasterSchema = new mongoose.Schema({
-    customId: {
-        type: String,
-        default : null,
-    },
-    opportunity : {
-        type: mongoose.Schema.Types.ObjectId,
-        ref : "OpportunityMaster"
-    },
     rfpDate: {
         type: Date,
         required: true,
+    },
+    customId: { //this is tenderid
+        type: String,
+        default : null,
     },
     entryDate: {
         type: Date,
@@ -26,17 +22,27 @@ const TenderMasterSchema = new mongoose.Schema({
     submissionDueDate: {
         type: Date,
     },
+    submissionDueDate: {
+        type: Date,
+    },
+    submissionDueTime: {
+        type: Date,
+    },
+    opportunity : {
+            type: mongoose.Schema.Types.ObjectId,
+            ref : "OpportunityMaster"
+    },
     client: {
         type: mongoose.Schema.Types.ObjectId,
         ref : "ClientMaster"
     },
-    reference: {
-        type: String,
-    },
     rfpTitle: {
         type: String,
     },
-    rfpSource: {
+    reference: { // tender ref
+        type: String,
+    },
+    rfpSource: {  // How did we recieve the RFP
         type: String,
     },
     associatedOpportunity: {
@@ -48,7 +54,8 @@ const TenderMasterSchema = new mongoose.Schema({
         default: false
     },
     bondValue: {
-        type: Number
+        type: String,
+        enum : ['Y', 'N']
     },
     bondIssueDate: {
         type: Date
@@ -71,7 +78,7 @@ const TenderMasterSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Staff",
     },
-    stage: {
+    tenderStage: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Stage",
         // enum: [
