@@ -2,7 +2,8 @@ import mongoose, { Mongoose } from "mongoose";
 
 export const ClientMasterSchema = new mongoose.Schema({
     avatar : {
-        type : String
+        type : String,
+        default : ""
     },
     name : {
         type : String,

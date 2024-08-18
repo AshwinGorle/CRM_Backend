@@ -108,7 +108,7 @@ class ClientMasterController {
         if(req.file){
             const avatarUrl =  await uploadAndGetAvatarUrl(req);
             console.log("client avatar url ", avatarUrl);
-            newClient[avatar] = avatarUrl;
+            newClient.avatar = avatarUrl;
         }
     
         // Save the instance
@@ -123,6 +123,7 @@ class ClientMasterController {
     const limit = parseInt(req.query.limit) || 12;
     const page = parseInt(req.query.page) || 1;
     const skip = (page-1)*limit;
+    const totalCount = await ClientMasterModel.countDocuments();
     const clientMasters = await ClientMasterModel.find().skip(skip).limit(limit)
         .populate("enteredBy")
         .populate("industry")
@@ -141,7 +142,7 @@ class ClientMasterController {
     res.status(200).json({
         status: 'success',
         message: 'All Client Masters retrieved successfully',
-        data: clientMasters,
+        data: { clientData : {page, limit, totalCount} ,clients : clientMasters},
     });
 
   });
