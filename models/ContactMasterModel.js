@@ -44,7 +44,7 @@ const ContactMasterSchema = new mongoose.Schema({
   personalEmail: {
     type: String,
   },
-  archType: {
+  archeType: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Archetype",
     // enum: [
@@ -69,13 +69,13 @@ const ContactMasterSchema = new mongoose.Schema({
   memorableDetail: {
     type: String,
   },
-  detailsConfirmation : {
-    type : Boolean,
-    default : false
-  },
-  Notes: [{
+  // detailsConfirmation : {
+  //   type : Boolean,
+  //   default : false
+  // },
+  Notes: {
     type: String,
-  }],
+  },
 });
 
 const ContactMasterModel = new mongoose.model(
