@@ -72,6 +72,7 @@ class RegistrationMasterController {
     const limit = parseInt(req.query.limit) || 12;
     const page = parseInt(req.query.page) || 1;
     const skip = (page - 1) * limit;
+    const totalCount = await RegistrationMasterModel.countDocuments();
     const registrationMasters = await RegistrationMasterModel.find()
       .skip(skip)
       .limit(limit)
@@ -83,7 +84,7 @@ class RegistrationMasterController {
     res.status(200).json({
       status: "success",
       message: "All RegistrationMasters retrieved successfully",
-      data: registrationMasters,
+      data: {registrationsData : {page, limit, totalCount}, registrations : registrationMasters},
     });
   });
 

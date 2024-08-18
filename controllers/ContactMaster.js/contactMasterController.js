@@ -89,6 +89,7 @@ class ContactMasterController {
     const limit = parseInt(req.query.limit) || 12;
     const page = parseInt(req.query.page) || 1;
     const skip = (page - 1) * limit;
+    const totalCount = await ContactMasterModel.countDocuments()
     const contacts = await ContactMasterModel.find()
       .limit(limit)
       .skip(skip)
@@ -99,8 +100,8 @@ class ContactMasterController {
 
     res.status(200).json({
       status: "success",
-      message: "All Contacts retrieved successfully",
-      data: contacts,
+      message: "All Contacts retrieved successfully--",
+      data: {contactsData : {page, limit, totalCount}, contacts}
     });
   });
 

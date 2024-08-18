@@ -95,6 +95,7 @@ class OpportunityController {
     const limit = parseInt(req.query.limit) || 12;
     const page = parseInt(req.query.page) || 1;
     const skip = (page - 1) * limit;
+    const totalCount = await OpportunityMasterModel.countDocuments();
     const { id } = req.params;
     const opportunities = await OpportunityMasterModel.find()
       .limit(limit)
@@ -131,7 +132,7 @@ class OpportunityController {
     res.status(200).json({
       status: "success",
       message: "All Opportunities retrieved successfully",
-      data: updatedOpportunities,
+      data: {opportunitiesData : {page , limit , totalCount}, opportunities : updatedOpportunities}
     });
   });
 
