@@ -70,6 +70,8 @@ class BusinessDevelopmentController {
       const limit = parseInt(req.query.limit) || 12;
       const page = parseInt(req.query.page) || 1;
       const skip = (page - 1) * limit;
+      const totalCount = await BusinessDevelopmentModel.countDocuments();
+
       const businessDevelopments = await BusinessDevelopmentModel.find().skip(skip).limit(limit)
         .populate("client")
         .populate("enteredBy")
@@ -83,7 +85,7 @@ class BusinessDevelopmentController {
       res.status(200).json({
         status: "success",
         message: "All Business Developments retrieved successfully",
-        data: businessDevelopments,
+        data: {businessDevelopmentsData : {page, limit, totalCount}, businessDevelopments},
       });
     }
   );

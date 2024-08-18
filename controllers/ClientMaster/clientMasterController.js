@@ -142,7 +142,7 @@ class ClientMasterController {
     res.status(200).json({
         status: 'success',
         message: 'All Client Masters retrieved successfully',
-        data: { clientData : {page, limit, totalCount} ,clients : clientMasters},
+        data: { clientsData : {page, limit, totalCount} ,clients : clientMasters},
     });
 
   });
