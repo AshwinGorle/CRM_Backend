@@ -76,7 +76,7 @@ class ContactMasterController {
         const contacts = await ContactMasterModel.find()
             .populate("enteredBy")
             .populate("client")
-            .populate("archType")
+            .populate("archeType")
             .populate("relationshipDegree");
 
         res.status(200).json({

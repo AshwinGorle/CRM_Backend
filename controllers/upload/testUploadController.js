@@ -229,6 +229,7 @@ class UploadController {
               break;
             case "enteredBy":
               formattedRow[modelField] = staffMap[row[csvField]];
+              console.log("enteredBy csv field ----", row[csvField])
               break;
             case "incorporationType":
               formattedRow[modelField] = incorporationTypeMap[row[csvField]];
