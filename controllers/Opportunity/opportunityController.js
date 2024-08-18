@@ -132,7 +132,7 @@ class OpportunityController {
     res.status(200).json({
       status: "success",
       message: "All Opportunities retrieved successfully",
-      data: {opportunitiesData : {page , limit , totalCount}, opportunities : updatedOpportunities}
+      data: {page , limit , totalCount, opportunities : updatedOpportunities}
     });
   });
 

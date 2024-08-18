@@ -85,7 +85,7 @@ class BusinessDevelopmentController {
       res.status(200).json({
         status: "success",
         message: "All Business Developments retrieved successfully",
-        data: {businessDevelopmentsData : {page, limit, totalCount}, businessDevelopments},
+        data: {page, limit, totalCount, businessDevelopments}
       });
     }
   );

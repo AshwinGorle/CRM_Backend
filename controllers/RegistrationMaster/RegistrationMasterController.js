@@ -84,7 +84,7 @@ class RegistrationMasterController {
     res.status(200).json({
       status: "success",
       message: "All RegistrationMasters retrieved successfully",
-      data: {registrationsData : {page, limit, totalCount}, registrations : registrationMasters},
+      data: {page, limit, totalCount, registrations : registrationMasters},
     });
   });
 

@@ -101,7 +101,7 @@ class ContactMasterController {
     res.status(200).json({
       status: "success",
       message: "All Contacts retrieved successfully--",
-      data: {contactsData : {page, limit, totalCount}, contacts}
+      data: {page, limit, totalCount, contacts}
     });
   });
 
