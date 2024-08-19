@@ -23,7 +23,7 @@ import SalesSubStageMasterModel from "../../models/Configuration/SalesSubStageMa
 import TenderStageModel from "../../models/ConfigModels/TenderMaster/TenderStageModel.js";
 import TenderMasterModel from "../../models/TenderMasterModel.js";
 import RevenueMasterModel from "../../models/RevenueMasterModel.js";
-// import { Readable } from 'stream'
+import { catchAsyncError } from "../../middlewares/catchAsyncError.middleware.js";
 class UploadController {
   static clientFieldMapping = {
     "Client Name": "name",
@@ -133,11 +133,9 @@ class UploadController {
             });
         }
     });
-
     // Parse the revenue data for each row
     return bulkData.slice(1).map(row => {
         let revenueData = [];
-
         yearQuarterPositions.forEach(({ year, Q1, Q2, Q3, Q4 }) => {
             let revenueEntry = {
                 year: year,
@@ -148,7 +146,6 @@ class UploadController {
             };
             revenueData.push(revenueEntry);
         });
-
         return revenueData;
     });
   }
@@ -252,12 +249,6 @@ class UploadController {
       }, {});
     });
 
-    console.log("sales sub stage map ------", salesSubStageMap)
-
-  
-
-    console.log("staff archtype map ----", archTypeMap);
-
     const relationshipDegreeMap = await RelationshipDegreeModel.find({}).then(
       (RSDegrees) => {
         return RSDegrees.reduce((acc, item) => {
@@ -266,8 +257,6 @@ class UploadController {
         }, {});
       }
     );
-
-    console.log("staff relationship degree map ----", relationshipDegreeMap);
 
     const tenderStageMap = await TenderStageModel.find({}).then((tenders)=>{
       return tenders.reduce((acc, item)=>{
@@ -293,14 +282,11 @@ class UploadController {
         break;
     }
 
-    console.log("csv to model fields---", csvToModelMap);
-
     let analysisResult = {};
     const formattedData = bulkData.map((row, rowIdx) => {
       let formattedRow = {};
       Object.keys(row).forEach((csvField, colIdx) => {
         const modelField = csvToModelMap[csvField];
-        console.log("ModelFeild------------ ", modelField);
         if (modelField) {
           switch (modelField) {
             case "classification":
@@ -382,8 +368,6 @@ class UploadController {
             default:
               formattedRow[modelField] = row[csvField];
           }
-
-
 
           if (
             modelField !== undefined &&
@@ -468,7 +452,7 @@ class UploadController {
     return outputFilePath;
   };
 
-  static uploadClientInBulk = async (req, res) => {
+  static uploadClientInBulk = catchAsyncError(async (req, res) => {
     const csvFilePath = req.file.path;
     const bulkData = await csv().fromFile(csvFilePath);
     const { formattedData, analysisResult } = await this.getFormattedData(
@@ -520,8 +504,8 @@ class UploadController {
         }
       });
     }
-  };
-  static uploadContactInBulk = async (req, res) => {
+  });
+  static uploadContactInBulk = catchAsyncError(async (req, res) => {
     const csvFilePath = req.file.path;
     const bulkData = await csv().fromFile(csvFilePath);
     const { formattedData, analysisResult } = await this.getFormattedData(
@@ -573,19 +557,15 @@ class UploadController {
         }
       });
     }
-  };
+  });
   
   static generateRevenues  = async (dataArray) =>{
     const resultArray = [];
-
     for (let i = 0; i < dataArray.length; i++) {
         const innerArray = dataArray[i];
         const revenueIds = [];
-
         for (let j = 0; j < innerArray.length; j++) {
             const revenueData = innerArray[j];
-
-            // Create a new revenue document
             const revenue = new RevenueMasterModel({
                 year: revenueData.year,
                 Q1: revenueData.Q1,
@@ -593,21 +573,15 @@ class UploadController {
                 Q3: revenueData.Q3,
                 Q4: revenueData.Q4
             });
-
-            // Save the document to the database
             const savedRevenue = await revenue.save();
-
-            // Store the generated _id in the array
             revenueIds.push(savedRevenue._id);
         }
-
         resultArray.push(revenueIds);
     }
-
     return resultArray;
 }
 
-  static uploadOpportunityInBulk = async (req, res) => {
+  static uploadOpportunityInBulk =  catchAsyncError(async(req, res) => {
     const csvFilePath = req.file.path;
     const bulkData = await csv().fromFile(csvFilePath);
     const indexToRemove = 0;
@@ -677,9 +651,9 @@ class UploadController {
         }
       });
     }
-  };
+  });
   
-  static uploadTenderInBulk = async (req, res) => {
+  static uploadTenderInBulk = catchAsyncError(async (req, res) => {
     const csvFilePath = req.file.path;
     const bulkData = await csv().fromFile(csvFilePath);
     console.log("tender bulk data ", bulkData)
@@ -734,7 +708,7 @@ class UploadController {
         }
       });
     }
-  };
+  });
 }
 
 export default UploadController;

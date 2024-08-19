@@ -153,7 +153,7 @@ class OpportunityController {
       .populate("salesChamp")
       .populate("salesStage")
       .populate("salesSubStage")
-      .populate("revenue")
+      .populate("revenue") 
       .populate("client");
 
     if (!opportunity) throw new ServerError("NotFound", "Opportunity");
