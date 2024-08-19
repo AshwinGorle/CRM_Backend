@@ -22,6 +22,7 @@ import SalesStageMasterModel from "../../models/Configuration/SalesStageMaster.j
 import SalesSubStageMasterModel from "../../models/Configuration/SalesSubStageMaster.js";
 import TenderStageModel from "../../models/ConfigModels/TenderMaster/TenderStageModel.js";
 import TenderMasterModel from "../../models/TenderMasterModel.js";
+import RevenueMasterModel from "../../models/RevenueMasterModel.js";
 // import { Readable } from 'stream'
 class UploadController {
   static clientFieldMapping = {
@@ -114,6 +115,44 @@ class UploadController {
     'Submission Date': 'submissionDate'
   };
   
+  static  parseRevenueData =( bulkData)=> {
+    let yearQuarterPositions = [];
+    const firstRow = bulkData[0]; // First row contains the headers
+
+    // Identify the positions of years and quarters in the first row
+    Object.entries(firstRow).forEach(([key, value], index) => {
+        let match = key.match(/REVENUE IN (\d{4})/);
+        if (match) {
+            let year = parseInt(match[1], 10);
+            yearQuarterPositions.push({
+                year: year,
+                Q1: index, // Assume the next few fields are Q1, Q2, Q3, Q4
+                Q2: index + 1,
+                Q3: index + 2,
+                Q4: index + 3
+            });
+        }
+    });
+
+    // Parse the revenue data for each row
+    return bulkData.slice(1).map(row => {
+        let revenueData = [];
+
+        yearQuarterPositions.forEach(({ year, Q1, Q2, Q3, Q4 }) => {
+            let revenueEntry = {
+                year: year,
+                Q1: parseFloat(row[Object.keys(firstRow)[Q1]]) || 0,
+                Q2: parseFloat(row[Object.keys(firstRow)[Q2]]) || 0,
+                Q3: parseFloat(row[Object.keys(firstRow)[Q3]]) || 0,
+                Q4: parseFloat(row[Object.keys(firstRow)[Q4]]) || 0
+            };
+            revenueData.push(revenueEntry);
+        });
+
+        return revenueData;
+    });
+  }
+
 
   static getFormattedData = async (bulkData, resource) => {
     const classificationMap = await ClassificationModel.find({}).then(
@@ -246,6 +285,7 @@ class UploadController {
         break;
       case "opportunity":
         csvToModelMap = this.opportunityFieldMap;
+        break;
       case "tender":
         csvToModelMap = this.tenderFieldMap;
         break;
@@ -340,6 +380,8 @@ class UploadController {
             default:
               formattedRow[modelField] = row[csvField];
           }
+
+
 
           if (
             modelField !== undefined &&
@@ -530,22 +572,66 @@ class UploadController {
       });
     }
   };
+  
+  static generateRevenues  = async (dataArray) =>{
+    const resultArray = [];
+
+    for (let i = 0; i < dataArray.length; i++) {
+        const innerArray = dataArray[i];
+        const revenueIds = [];
+
+        for (let j = 0; j < innerArray.length; j++) {
+            const revenueData = innerArray[j];
+
+            // Create a new revenue document
+            const revenue = new RevenueMasterModel({
+                year: revenueData.year,
+                Q1: revenueData.Q1,
+                Q2: revenueData.Q2,
+                Q3: revenueData.Q3,
+                Q4: revenueData.Q4
+            });
+
+            // Save the document to the database
+            const savedRevenue = await revenue.save();
+
+            // Store the generated _id in the array
+            revenueIds.push(savedRevenue._id);
+        }
+
+        resultArray.push(revenueIds);
+    }
+
+    return resultArray;
+}
 
   static uploadOpportunityInBulk = async (req, res) => {
     const csvFilePath = req.file.path;
     const bulkData = await csv().fromFile(csvFilePath);
-    console.log("opportunity bulk data ----", bulkData);
+    const indexToRemove = 0;
+    const updatedBulkData = bulkData.slice(0, indexToRemove).concat(bulkData.slice(indexToRemove + 1)); // removing the second row from bukdata
+
+    console.log("updated bulk data ----", updatedBulkData);
+    console.log("bulk data---", bulkData);
+ 
     const { formattedData, analysisResult } = await this.getFormattedData(
-      bulkData,
+      updatedBulkData,
       "opportunity"
     );
     console.log("analysis result ---", analysisResult);
     console.log("formatted data ---", formattedData);
-    console.log("bulk data---", bulkData);
-    res.send({data : bulkData})
-  
+
     if (Object.keys(analysisResult).length === 0) {
       console.log("directory name----");
+      const revenueDate  = this.parseRevenueData(bulkData);
+      const revenueIdData = await this.generateRevenues(revenueDate);
+      console.log(revenueDate)    
+      console.log(revenueIdData)    
+      revenueIdData.forEach((revenueArray, idx)=>{
+        formattedData[idx]['revenue'] = revenueArray;
+      })
+      console.log("formatted data with revenue", formattedData )
+ 
       const opportunities = await OpportunityMasterModel.insertMany(
         formattedData
       );
@@ -575,7 +661,7 @@ class UploadController {
     } else {
       const correctionFilePath = await this.getCorrectionFile(
         bulkData,
-        "contact",
+        "opportunity",
         analysisResult,
         formattedData
       );
