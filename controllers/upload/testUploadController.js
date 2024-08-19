@@ -82,8 +82,8 @@ class UploadController {
     SUBSOLUTION: "subSolution",
     "SALES CHAMP": "salesChamp",
     "SALES STAGE": "salesStage",
-    field13: "salesSubStage",
-    field14: "stageClarification",
+    "SALES SUBSTAGE": "salesSubStage",
+    "STAGE CLARIFICATION": "stageClarification",
     "SALES TOPLINE": "salesTopLine",
     OFFSETS: "offsets",
     "CONFIDENCE LEVELS": "confidenceLevel",
@@ -251,6 +251,8 @@ class UploadController {
         return acc;
       }, {});
     });
+
+    console.log("sales sub stage map ------", salesSubStageMap)
 
   
 
@@ -635,8 +637,8 @@ class UploadController {
       const opportunities = await OpportunityMasterModel.insertMany(
         formattedData
       );
-      console.log("all contacts", contacts);
-      const ids = contacts.map((opportunity) => opportunity._id.toString());
+      // console.log("all contacts", contacts);
+      const ids = opportunities.map((opportunity) => opportunity._id.toString());
       const csv = parse(ids.map((id) => ({ id })));
       const tempUploadDir = path.join(process.cwd(), "tempUpload");
       // Ensure the directory exists (create if it doesn't)

@@ -144,7 +144,7 @@ class OpportunityController {
   });
 
   static getOpportunityById = catchAsyncError(async (req, res, next) => {
-
+     const {id} = req.params;
     let opportunity = await OpportunityMasterModel.findById(id)
       .populate("enteredBy")
       .populate("associatedTender")
