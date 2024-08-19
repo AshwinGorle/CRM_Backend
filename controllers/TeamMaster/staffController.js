@@ -5,26 +5,31 @@ import uploadAndGetAvatarUrl from "../../utils/uploadAndGetAvatarUrl.utils.js";
 
 class StaffController {
   static getAllStaff = catchAsyncError(async (req, res, next) => {
-    const page = req.query.page || 1;
-    const limit = req.query.limit || 12;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 12;
     const skip = (page - 1) * limit;
-    const totalCount = StaffModel.countDocuments();
     const { config } = req.query;
-    if (Boolean(config) == true) {
+
+    // Check if config is provided and is true
+    if (config === 'true') {
       const staffs = await StaffModel.find().select("firstName lastName");
-      res.send({
+      return res.status(200).json({
         status: "success",
         message: "Config staffs fetched successfully",
         data: { config: true, staffs },
       });
     }
+
+    const totalCount = await StaffModel.countDocuments(); // Ensure this is awaited
     const staffs = await StaffModel.find().limit(limit).skip(skip);
-    res.status(201).json({
+
+    return res.status(200).json({
       status: "success",
       message: "All staff fetched successfully",
       data: { page, limit, totalCount, staffs },
     });
-  });
+});
+
 
   static getStaff = catchAsyncError(async (req, res, next) => {
     const id = req.params.id;
