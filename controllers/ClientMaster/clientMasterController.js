@@ -125,9 +125,9 @@ class ClientMasterController {
     const skip = (page-1)*limit;
     const {config} = req.query;
     
-    if(Boolean(config) == true){
-        console.log("config ture")
-        return
+    if(config === 'true'){
+        const clients = await ClientMasterModel.find().select("name")
+        return res.send({config : true , clients});
     }
     
     const totalCount = await ClientMasterModel.countDocuments();

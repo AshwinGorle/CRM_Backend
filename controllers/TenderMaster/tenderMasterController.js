@@ -115,12 +115,12 @@ class TenderMasterController {
   static getAllTenderMasters = catchAsyncError(async (req, res, next) => {
     const { page = 1, limit = 12, config = false} = req.query;
     const  skip = (page - 1) * limit 
-    const  totalCount = TenderMasterModel.countDocuments();
-    if(Boolean(config)==true){
+    const  totalCount = await TenderMasterModel.countDocuments();
+    if(config === "true"){
       const tenders = await TenderMasterModel.find().select("customId");
       return res.send({status : "success", message : "Config Tender fetched successfully", data : { config : true ,  tenders }});
     }
-    tenderMasters = await TenderMasterModel.find()
+    const tenderMasters = await TenderMasterModel.find()
       .limit(limit)
       .skip(skip)
       .populate("enteredBy")

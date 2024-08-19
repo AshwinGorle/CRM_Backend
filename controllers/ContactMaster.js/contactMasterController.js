@@ -90,7 +90,7 @@ class ContactMasterController {
     const page = parseInt(req.query.page) || 1;
     const skip = (page - 1) * limit;
     const {config} = req.query;
-    if(Boolean(config)==true){
+    if(config === 'true'){
       const contacts = await ContactMasterModel.find().select("firstName lastName");
       return res.send({status : "success", message : "Config contacts fetched successfully", data : { config : true ,  contacts }});
     }

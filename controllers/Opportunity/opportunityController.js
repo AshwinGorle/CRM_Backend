@@ -96,8 +96,8 @@ class OpportunityController {
     const page = parseInt(req.query.page) || 1;
     const skip = (page - 1) * limit;
     const {config} = req.query;
-      if(Boolean(config)==true){
-        console.log('"entered in config ', Boolean(config))
+      if(config === "true"){
+        console.log('entered in config ', Boolean(config))
         const opportunities = await OpportunityMasterModel.find().select("customId");
         return res.send({status : "success", message : "Config opportunities fetched successfully", data : { config : true ,  opportunities }});
       }
