@@ -23,7 +23,7 @@ class ContactMasterController {
       city,
       memorableDetail,
       detailsConfirmation,
-      Notes,
+      notes,
     } = req.body;
 
     // Validate required fields
@@ -71,7 +71,7 @@ class ContactMasterController {
       city,
       memorableDetail,
       detailsConfirmation,
-      Notes,
+      notes,
     });
 
     // Save the instance

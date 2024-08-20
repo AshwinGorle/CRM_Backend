@@ -56,7 +56,6 @@ const ContactMasterSchema = new mongoose.Schema({
     //   "Detractor",
     //   "Generic",
     // ],
-    
   },
   relationshipDegree: {
     type : mongoose.Schema.Types.ObjectId,
@@ -73,9 +72,10 @@ const ContactMasterSchema = new mongoose.Schema({
   //   type : Boolean,
   //   default : false
   // },
-  Notes: {
-    type: String,
-  },
+  notes : [
+    {type : String}
+  ]
+
 });
 
 const ContactMasterModel = new mongoose.model(
