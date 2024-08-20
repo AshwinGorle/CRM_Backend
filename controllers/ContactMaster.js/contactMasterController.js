@@ -115,7 +115,7 @@ class ContactMasterController {
     const contact = await ContactMasterModel.findById(id)
       .populate("enteredBy")
       .populate("client")
-      .populate("archType")
+      .populate("archeType")
       .populate("relationshipDegree");
 
     if (!contact) throw new ServerError("NotFound", "Contact");

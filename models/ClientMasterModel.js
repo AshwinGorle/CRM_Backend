@@ -1,3 +1,4 @@
+import { TopologyOpeningEvent } from "mongodb";
 import mongoose, { Mongoose } from "mongoose";
 
 export const ClientMasterSchema = new mongoose.Schema({
@@ -76,9 +77,12 @@ export const ClientMasterSchema = new mongoose.Schema({
         type : mongoose.Schema.Types.ObjectId,
         ref : "Staff"
     },
-    relatedContacts : {
-        type : String
-    },
+    relatedContacts : [
+        {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : "ContactMaster"
+        }
+    ],
     relationShipStatus : {
         type : mongoose.Schema.Types.ObjectId,
         ref : "RelationshipStatus"
@@ -91,6 +95,12 @@ export const ClientMasterSchema = new mongoose.Schema({
         type : String,
         enum : ["Very High", "High", "Medium", "Low"]
     },
+    contacts : [
+        {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : 'ContactMaster'
+        }
+    ]
     // detailsConfirmation : {
     //     type : Boolean,
     //     default : false

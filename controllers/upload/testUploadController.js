@@ -56,7 +56,7 @@ class UploadController {
     "Entry Date": "entryDate",
     "Entered by": "enteredBy",
     "First Name": "firstName",
-    "Last Date": "lastName",
+    "Last Name": "lastName",
     "Client Name (drop down from Client Master)": "client", //remove this field
     "Job Title": "jobTitle",
     Phone: "phone",
@@ -308,6 +308,9 @@ class UploadController {
             case "entryDate":
               formattedRow[modelField] = new Date(row[csvField]);
               break;
+            case "relatedContacts":
+              formattedRow[modelField] = null;
+              break;
             case "industry":
               formattedRow[modelField] = industryMap[row[csvField]];
               break;
@@ -453,7 +456,8 @@ class UploadController {
   };
 
   static uploadClientInBulk = catchAsyncError(async (req, res) => {
-    const csvFilePath = req.file.path;
+    const csvFilePath = req.file.path
+    const {check} = req.query
     const bulkData = await csv().fromFile(csvFilePath);
     const { formattedData, analysisResult } = await this.getFormattedData(
       bulkData,
@@ -461,7 +465,7 @@ class UploadController {
     );
     console.log("analysis result ---", analysisResult);
     console.log("formatted data ---", formattedData);
-    if (Object.keys(analysisResult).length === 0) {
+    if (!check=== 'true' && Object.keys(analysisResult).length === 0) {
       console.log("directory name----");
       const clients = await ClientMasterModel.insertMany(formattedData);
       console.log("all clients", clients);
@@ -469,7 +473,7 @@ class UploadController {
       const csv = parse(ids.map((id) => ({ id })));
       const tempUploadDir = path.join(process.cwd(), "tempUpload");
       // Ensure the directory exists (create if it doesn't)
-      if (!fs.existsSync(tempUploadDir)) {
+      if (!check ==='true' && !fs.existsSync(tempUploadDir)) {
         fs.mkdirSync(tempUploadDir);
       }
       const filePath = path.join(tempUploadDir, "filename.csv");
@@ -507,6 +511,7 @@ class UploadController {
   });
   static uploadContactInBulk = catchAsyncError(async (req, res) => {
     const csvFilePath = req.file.path;
+    const {check} = req.query;
     const bulkData = await csv().fromFile(csvFilePath);
     const { formattedData, analysisResult } = await this.getFormattedData(
       bulkData,
@@ -514,7 +519,7 @@ class UploadController {
     );
     console.log("analysis result ---", analysisResult);
     console.log("formatted data ---", formattedData);
-    if (Object.keys(analysisResult).length === 0) {
+    if (!check=== 'true' && Object.keys(analysisResult).length === 0) {
       console.log("directory name----");
       const contacts = await ContactMasterModel.insertMany(formattedData);
       console.log("all contacts", contacts);
@@ -583,6 +588,7 @@ class UploadController {
 
   static uploadOpportunityInBulk =  catchAsyncError(async(req, res) => {
     const csvFilePath = req.file.path;
+    const {check} = req.query;
     const bulkData = await csv().fromFile(csvFilePath);
     const indexToRemove = 0;
     const updatedBulkData = bulkData.slice(0, indexToRemove).concat(bulkData.slice(indexToRemove + 1)); // removing the second row from bukdata
@@ -597,7 +603,7 @@ class UploadController {
     console.log("analysis result ---", analysisResult);
     console.log("formatted data ---", formattedData);
 
-    if (Object.keys(analysisResult).length === 0) {
+    if (!check=== 'true' && Object.keys(analysisResult).length === 0) {
       console.log("directory name----");
       const revenueDate  = this.parseRevenueData(bulkData);
       const revenueIdData = await this.generateRevenues(revenueDate);
@@ -655,6 +661,7 @@ class UploadController {
   
   static uploadTenderInBulk = catchAsyncError(async (req, res) => {
     const csvFilePath = req.file.path;
+    const {check} = req.query
     const bulkData = await csv().fromFile(csvFilePath);
     console.log("tender bulk data ", bulkData)
     const { formattedData, analysisResult } = await this.getFormattedData(
@@ -665,7 +672,7 @@ class UploadController {
     console.log("formatted data ---", formattedData);
     console.log("bulk data------", bulkData);
  
-    if (Object.keys(analysisResult).length === 0) {
+    if (!check=== 'true' && Object.keys(analysisResult).length === 0) {
       console.log("directory name----");
       const tenders = await TenderMasterModel.insertMany(formattedData);
       console.log("all tenders", tenders);
