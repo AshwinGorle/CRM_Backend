@@ -43,7 +43,7 @@ class StaffController {
   });
 
   static createStaff = catchAsyncError(async (req, res, next) => {
-    const { firstName, lastName, phone, email, address, role } = req.body;
+    const { firstName, lastName, phone, email, address, role, gender, DOB } = req.body;
     const staff = await new StaffModel({
       firstName,
       lastName,
@@ -51,6 +51,8 @@ class StaffController {
       email,
       address,
       role,
+      gender,
+      DOB
     });
     console.log("creating staff");
     console.log("creating staff", staff);

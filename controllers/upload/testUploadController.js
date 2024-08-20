@@ -88,7 +88,6 @@ class UploadController {
         return acc;
       }, {});
     });
-    console.log("staff Map ----", staffMap);
 
     const archTypeMap = await ArchetypeModel.find({}).then((archType) => {
       return archType.reduce((acc, item) => {
@@ -374,8 +373,9 @@ class UploadController {
       fs.unlinkSync(filePath);
       res.send({
         status: "success",
+        type : "backup",
         message: "Client bulk import successful",
-        data: { file: fileUrl, client: clients },
+        data: { url: fileUrl, client: clients },
       });
     } else {
       console.log("jumped in else")
@@ -387,6 +387,7 @@ class UploadController {
       );
       res.json({
         status: "success",
+        type:"correction",
         message: "There are corrections in this client file!",
         data: { url: correctionFileUrl },
       });

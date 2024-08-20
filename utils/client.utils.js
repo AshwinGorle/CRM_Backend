@@ -4,7 +4,9 @@ import ContactMasterModel from "../models/ContactMasterModel.js";
 import { ServerError } from "./customErrorHandler.utils.js";
 
 export const parseContacts = async (relatedContacts, client)=>{
-    relatedContacts = JSON.parse(relatedContacts)
+    if(relatedContacts){
+        relatedContacts = JSON.parse(relatedContacts)
+    }else { return }
     if(Array.isArray(relatedContacts) && relatedContacts.length > 0){
         for (const contactId of relatedContacts){
             const contact = await ContactMasterModel.findById(contactId);
