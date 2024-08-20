@@ -3,9 +3,21 @@ import ClassificationModel from "../models/ConfigModels/ClientMaster/Classificat
 import ContactMasterModel from "../models/ContactMasterModel.js";
 import { ServerError } from "./customErrorHandler.utils.js";
 
+function formatArrayString(input) {
+    // Remove spaces after '[' and before ']'
+    let formatted = input.replace(/\[\s*/, '[').replace(/\s*\]/, ']');
+
+    // Remove spaces around single quotes
+    formatted = formatted.replace(/\s*'([^']*)'\s*/g, "'$1'");
+
+    return formatted;
+}
+
 export const parseContacts = async (relatedContacts, client)=>{
     if(relatedContacts){
-        relatedContacts = JSON.parse(relatedContacts)
+        // relatedContacts = formatArrayString(relatedContacts.toString());
+        console.log("relatedcn----", relatedContacts[0])
+        // relatedContacts = JSON.parse(relatedContacts)
     }else { return }
     if(Array.isArray(relatedContacts) && relatedContacts.length > 0){
         for (const contactId of relatedContacts){

@@ -179,7 +179,7 @@ static getClientById = catchAsyncError(async (req, res, next) => {
         // .populate("primaryRelationship")
         // .populate("secondaryRelationship")
         .populate("relationshipStatus")
-        .populate("relatedContacts");
+        // .populate("relatedContacts");
 
 
     if (!client) throw new ServerError("NotFound", "Client");
