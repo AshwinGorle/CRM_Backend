@@ -69,11 +69,11 @@ export const ClientMasterSchema = new mongoose.Schema({
     itEmployeeStrength : {
         type : Number
     },
-    primaryRelationShip : {
+    primaryRelationship : {
         type : mongoose.Schema.Types.ObjectId,
         ref : "Staff"
     },
-    secondaryRelationShip : {
+    secondaryRelationship : {
         type : mongoose.Schema.Types.ObjectId,
         ref : "Staff"
     },
@@ -83,7 +83,7 @@ export const ClientMasterSchema = new mongoose.Schema({
             ref : "ContactMaster"
         }
     ],
-    relationShipStatus : {
+    relationshipStatus : {
         type : mongoose.Schema.Types.ObjectId,
         ref : "RelationshipStatus"
     },

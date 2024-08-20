@@ -40,7 +40,7 @@ class ClientMasterController {
             enteredBy,
             industry,
             subIndustry,
-            Offering,
+            offering,
             territory,
             PursuedOpportunityValue,
             incorporationType,
@@ -51,9 +51,9 @@ class ClientMasterController {
             totalEmployeeStrength,
             itEmployeeStrength,
             primaryRelationShip,
-            secondaryRelationShip,
+            secondaryRelationship,
             relatedContacts,
-            relationShipStatus,
+            relationshipStatus,
             lifeTimeValue,
             priority,
             detailsConfirmation,
@@ -86,7 +86,7 @@ class ClientMasterController {
             enteredBy,
             industry,
             subIndustry,
-            Offering,
+            offering,
             territory,
             PursuedOpportunityValue,
             incorporationType,
@@ -97,14 +97,16 @@ class ClientMasterController {
             totalEmployeeStrength,
             itEmployeeStrength,
             primaryRelationShip,
-            secondaryRelationShip,
+            secondaryRelationship,
             relatedContacts: [],
-            relationShipStatus,
+            relationshipStatus,
             lifeTimeValue,
             priority,
             detailsConfirmation,
         });
-    
+        
+        console.log("primaryR ", req?.body?.primaryRelationShip);
+        console.log("secondaryR ", req?.body?.secondaryRelationShip);
         // Parse relatedContacts if it's a string and not already an array
         // if (typeof relatedContacts === 'string') {
         //     relatedContacts = JSON.parse(relatedContacts);
@@ -150,7 +152,7 @@ class ClientMasterController {
         .populate("classification")
         .populate("primaryRelationShip")
         .populate("secondaryRelationShip")
-        .populate("relationShipStatus")
+        .populate("relationshipStatus")
         .populate("relatedContacts");
     
     for(const client of clientMasters ){
@@ -176,7 +178,7 @@ static getClientById = catchAsyncError(async (req, res, next) => {
         .populate("classification")
         .populate("primaryRelationShip")
         .populate("secondaryRelationShip")
-        .populate("relationShipStatus")
+        .populate("relationshipStatus")
         .populate("relatedContacts");
 
 
