@@ -54,13 +54,17 @@ class OpportunityController {
     // Create a new instance of the OpportunityMasterModel
     //Generating opportunity id
     let customId = null;
+    console.log("client id ", client)
     if (client) {
       const fetchedClient = await ClientMasterModel.findById(client).select(
         "name"
       );
+      console.log("fetched client", fetchedClient)
       const customOpportunityId = this.generateCustomID(fetchedClient.name);
+      console.log("cutomopp", customOpportunityId);
       customId = customOpportunityId;
     }
+    console.log("generated opp cId ,", customId)
 
     const newOpportunity = new OpportunityMasterModel({
       customId,
@@ -146,15 +150,15 @@ class OpportunityController {
   static getOpportunityById = catchAsyncError(async (req, res, next) => {
      const {id} = req.params;
     let opportunity = await OpportunityMasterModel.findById(id)
-      .populate("enteredBy")
+      // .populate("enteredBy")
       .populate("associatedTender")
       .populate("solution")
       .populate("subSolution")
-      .populate("salesChamp")
+      // .populate("salesChamp")
       .populate("salesStage")
       .populate("salesSubStage")
       .populate("revenue") 
-      .populate("client");
+      // .populate("client");
 
     if (!opportunity) throw new ServerError("NotFound", "Opportunity");
 

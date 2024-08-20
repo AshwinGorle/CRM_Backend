@@ -25,6 +25,7 @@ import TenderMasterModel from "../../models/TenderMasterModel.js";
 import RevenueMasterModel from "../../models/RevenueMasterModel.js";
 import { clientFieldMapping, contactFieldMap, opportunityFieldMap, tenderFieldMap } from "./fieldMap.js";
 import { catchAsyncError  } from "../../middlewares/catchAsyncError.middleware.js";
+
 class UploadController {
 
   static getFormattedData = async (bulkData, resource) => {
@@ -178,7 +179,7 @@ class UploadController {
             case "incorporationType":
               formattedRow[modelField] = incorporationTypeMap[row[csvField]];
               break;
-            case "relationShipStatus":
+            case "relationshipStatus":
               formattedRow[modelField] = relationshipStatusMap[row[csvField]];
               break;
             case "listedCompany":
@@ -199,10 +200,10 @@ class UploadController {
             case "territory":
               formattedRow[modelField] = territoryMap[row[csvField]];
               break;
-            case "primaryRelationShip":
+            case "primaryRelationship":
               formattedRow[modelField] = staffMap[row[csvField]];
               break;
-            case "secondaryRelationShip":
+            case "secondaryRelationship":
               formattedRow[modelField] = staffMap[row[csvField]];
               break;
             case "archeType":
@@ -241,11 +242,14 @@ class UploadController {
             case "bidManager":
               formattedRow[modelField] = staffMap[row[csvField]]; // Implement getSolutionIdByName function
               break;
-            case "tenderStage":
+            case "stage":
               formattedRow[modelField] = tenderStageMap[row[csvField]]; // Implement getSolutionIdByName function
               break;
             case "associatedOpportunity":
               formattedRow[modelField] = null; // Implement getSolutionIdByName function
+              break;
+            case "bond":
+              formattedRow[modelField] = bulkData[csvField] == "Y" ? true : false; // Implement getSolutionIdByName function
               break;
             default:
               formattedRow[modelField] = row[csvField];
@@ -437,7 +441,6 @@ class UploadController {
         analysisResult,
         formattedData
       );
-      console.log("correction file path", correctionFilePath);
       res.json({
         status: "success",
         message: "There are corrections in this contact file!",
@@ -527,21 +530,14 @@ class UploadController {
         data: { file: fileUrl, opportunities: opportunities },
       });
     } else {
-      const correctionFilePath = await this.getCorrectionFile(
+      const correctionFileUrl = await this.getCorrectionFile(
         bulkData,
         "opportunity",
         analysisResult,
         formattedData
       );
-      console.log("correction file path", correctionFilePath);
-      res.download(correctionFilePath, "highlighted_output.xlsx", (err) => {
-        if (err) {
-          console.error(err);
-          res
-            .status(500)
-            .json({ status: "error", message: "Failed to download file" });
-        }
-      });
+      console.log("correction file path", correctionFileUrl);
+      return res.json({status : "success", message : "There are corrections in Opp. file!", type : "correction" ,data : {url : correctionFileUrl}})
     }
   });
 
@@ -591,7 +587,7 @@ class UploadController {
         analysisResult,
         formattedData
       );
-      console.log("correction file path", correctionFilePath);
+      // console.log("correction file path", correctionFilePath);
       res.json({
         status: "success",
         message: "There are corrections in this contact file!",

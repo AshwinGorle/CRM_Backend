@@ -94,14 +94,14 @@ class BusinessDevelopmentController {
     async (req, res, next) => {
       const { id } = req.params;
       const businessDevelopment = await BusinessDevelopmentModel.findById(id)
-        .populate("client")
-        .populate("enteredBy")
-        .populate("contact")
+        // .populate("client")
+        // .populate("enteredBy")
+        // .populate("contact")
         .populate("solution")
         .populate("subSolution")
         .populate("industry")
         .populate("territory")
-        .populate("salesChamp");
+        // .populate("salesChamp");
 
       if (!businessDevelopment)
         throw new ServerError("NotFound", "Business Development");

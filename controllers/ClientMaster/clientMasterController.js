@@ -176,7 +176,7 @@ static getClientById = catchAsyncError(async (req, res, next) => {
         .populate("territory")
         .populate("incorporationType")
         .populate("classification")
-        .populate("primaryRelationship")
+        // .populate("primaryRelationship")
         // .populate("secondaryRelationship")
         .populate("relationshipStatus")
         .populate("relatedContacts");

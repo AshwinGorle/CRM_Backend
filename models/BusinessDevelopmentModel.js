@@ -42,7 +42,7 @@ const BusinessDevelopmentSchema = new mongoose.Schema({
     },
     salesChamp: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "TerritoryMaster"
+        ref: "Staff"
     },
     potentialTopLine: {
         type: Number

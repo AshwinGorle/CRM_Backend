@@ -28,10 +28,6 @@ const TenderMasterSchema = new mongoose.Schema({
     submissionDueTime: {
         type: Date,
     },
-    opportunity : {
-            type: mongoose.Schema.Types.ObjectId,
-            ref : "OpportunityMaster"
-    },
     client: {
         type: mongoose.Schema.Types.ObjectId,
         ref : "ClientMaster"
@@ -54,8 +50,8 @@ const TenderMasterSchema = new mongoose.Schema({
         default: false
     },
     bondValue: {
-        type: String,
-        enum : ['Y', 'N']
+        type: Number,
+      
     },
     bondIssueDate: {
         type: Date
@@ -78,17 +74,9 @@ const TenderMasterSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Staff",
     },
-    tenderStage: {
+    stage: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Stage",
-        // enum: [
-            //     "Tender Being Received",
-            //     "Tender Sent To Technical Team",
-            //     "Awaiting Confirmation of Participation",
-            //     "Confirmed Participation - Confirmed to Client",
-            //     "Tender Dropped",
-            //     "Tender Submitted"
-            // ],
         },
         stageExplanation: {
             type: String,
