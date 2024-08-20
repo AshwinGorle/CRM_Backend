@@ -150,8 +150,8 @@ class ClientMasterController {
         .populate("territory")
         .populate("incorporationType")
         .populate("classification")
-        .populate("primaryRelationShip")
-        .populate("secondaryRelationShip")
+        .populate("primaryRelationship")
+        .populate("secondaryRelationship")
         .populate("relationshipStatus")
         .populate("relatedContacts");
     
@@ -176,8 +176,8 @@ static getClientById = catchAsyncError(async (req, res, next) => {
         .populate("territory")
         .populate("incorporationType")
         .populate("classification")
-        .populate("primaryRelationShip")
-        .populate("secondaryRelationShip")
+        .populate("primaryRelationship")
+        // .populate("secondaryRelationship")
         .populate("relationshipStatus")
         .populate("relatedContacts");
 
