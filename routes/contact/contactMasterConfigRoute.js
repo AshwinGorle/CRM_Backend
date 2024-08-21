@@ -1,7 +1,7 @@
-import ContactMasterConfigController from "../../controllers/ContactMaster.js/contactMasterConfigController.js";
+import ContactMasterConfigController from "../../controllers/ContactMaster/contactMasterConfigController.js";
 import { Router } from "express";
 const contactMasterConfigRouter = Router();
-
+import upload from "../../utils/storage.utils.js";
 
 //--------------------------------ArcheType---------------------------
 
@@ -15,8 +15,8 @@ contactMasterConfigRouter.delete('/archetype/:id', ContactMasterConfigController
 
 contactMasterConfigRouter.get('/relationship-degree', ContactMasterConfigController.getAllRelationshipDegrees);
 contactMasterConfigRouter.get('/relationship-degree/:id', ContactMasterConfigController.getRelationshipDegreeById);
-contactMasterConfigRouter.post('/relationship-degree', ContactMasterConfigController.createRelationshipDegree);
-contactMasterConfigRouter.put('/relationship-degree/:id', ContactMasterConfigController.updateRelationshipDegree);
+contactMasterConfigRouter.post('/relationship-degree',ContactMasterConfigController.createRelationshipDegree);
+contactMasterConfigRouter.put('/relationship-degree/:id',    ContactMasterConfigController.updateRelationshipDegree);
 contactMasterConfigRouter.delete('/relationship-degree/:id', ContactMasterConfigController.deleteRelationshipDegree);
 
 export default contactMasterConfigRouter;

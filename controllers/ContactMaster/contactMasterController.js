@@ -114,7 +114,7 @@ class ContactMasterController {
     const { id } = req.params;
     const contact = await ContactMasterModel.findById(id)
       .populate("enteredBy")
-      .populate("client")
+      // .populate("client")
       .populate("archeType")
       .populate("relationshipDegree");
 
@@ -128,15 +128,17 @@ class ContactMasterController {
   });
 
   static updateContact = catchAsyncError(async (req, res, next) => {
+    console.log("update intered")
     const { id } = req.params;
     const updateData = req.body;
     const contact = await ContactMasterModel.findById(id);
-
+    console.log("update data ", updateData)
     if (!contact) throw new ServerError("NotFound", "Contact");
 
     Object.keys(updateData).forEach((key) => {
       contact[key] = updateData[key];
     });
+    console.log("contact before save ", contact);
     const updatedContact = await contact.save();
 
     res.status(200).json({

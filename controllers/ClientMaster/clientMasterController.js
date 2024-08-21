@@ -169,6 +169,7 @@ static getClientById = catchAsyncError(async (req, res, next) => {
 static updateClient = catchAsyncError(async (req, res, next) => {
     const { id } = req.params;
     const updateData = req.body;
+    console.log(req.body)
     const client = await ClientMasterModel.findById(id);
 
     if (!client) throw new ServerError("NotFound", "Client");

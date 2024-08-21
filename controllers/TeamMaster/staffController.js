@@ -75,6 +75,7 @@ class StaffController {
   static updateStaff = catchAsyncError(async (req, res, next) => {
     const id = req.params.id;
     const updateData = req.body;
+    console.log("data to update : ", updateData)
     const staff = await StaffModel.findById(id);
     if (!staff) throw new ServerError("NotFound", "staff");
     Object.keys(updateData).forEach((key) => {
@@ -87,6 +88,7 @@ class StaffController {
         staff._id
       );
     }
+    await staff.save();
     res.status(201).json({
       status: "success",
       message: "Staff updated successfully",
