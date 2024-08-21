@@ -72,6 +72,10 @@ const OpportunityMasterSchema = new mongoose.Schema({
   }],
   
   //totalRevenue    derived
+  totalRevenue : {
+    type : Number,
+    default : 0
+  },
 
   confidenceLevel : {
     type : Number,
@@ -80,6 +84,10 @@ const OpportunityMasterSchema = new mongoose.Schema({
   },
 
   //Expected Sales derived
+  expectedSales : {
+    type : Number,
+    default : 0
+  }
   //confidence * totalRevenue
 
 });
