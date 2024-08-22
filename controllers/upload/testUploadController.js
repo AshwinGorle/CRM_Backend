@@ -470,7 +470,7 @@ class UploadController {
         status: "success",
         type: "backup",
         message: "Client bulk import successful",
-        data: { url: fileUrl, client: clients },
+        data: { url: fileUrl },
       });
     } else {
       console.log("jumped in else");
