@@ -348,12 +348,13 @@ class UploadController {
   static uploadClientInBulk = catchAsyncError(async (req, res) => {
     const csvFilePath = req.file.path;
     let { check } = req.query;
+    check = check === 'true' ? true : false;
     const bulkData = await csv().fromFile(csvFilePath);
     const { formattedData, analysisResult } = await this.getFormattedData(
       bulkData,
       "client"
     );
-    check = check === 'true' ? true : false;
+    
     if (!check && Object.keys(analysisResult).length === 0) {
       console.log("directory name----");
       const clients = await ClientMasterModel.insertMany(formattedData);

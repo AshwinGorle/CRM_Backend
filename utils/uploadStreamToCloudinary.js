@@ -7,13 +7,13 @@ cloudinary.config({
   api_secret: "BAE53B15sBunaCEbmg1gNQM5VV8",
 });
 
-const uploadStreamToCloudinary = async (buffer, folderName, fileName, retries = 2) => {
+const uploadStreamToCloudinary = async (buffer, folderName, fileName, fileExtension ,retries = 2) => {
   return new Promise((resolve, reject) => {
     const uploadFunction = (retryCount) => {
       cloudinary.uploader.upload_stream(
         {
           resource_type: 'raw', // Specify that you are uploading a raw file
-          public_id: `${folderName}/${fileName}.jpg` // Set folder name and file name
+          public_id: `${folderName}/${fileName}.${fileExtension}` // Set folder name and file name
         },
         function (error, result) {
           if (error) {
