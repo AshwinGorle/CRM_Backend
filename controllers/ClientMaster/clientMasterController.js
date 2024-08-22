@@ -181,7 +181,7 @@ static updateClient = catchAsyncError(async (req, res, next) => {
    
     if(updateData.relatedContacts) await parseContacts(updateData.relatedContacts, client);
     if(req.file){
-        client.avatar =  await uploadAndGetAvatarUrl(req.file.path,'client',client._id );
+        client.avatar =  await uploadAndGetAvatarUrl(req.file,'client',client._id, "stream" );
     }
     const updatedClientMaster = await client.save();
     

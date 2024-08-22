@@ -39,7 +39,7 @@ class OpportunityController {
         .status(400)
         .json({ status: "failed", message: "Invalid entryDate" });
     }
-    const newOpportunity = new OpportunityMasterModel({
+    let newOpportunity = new OpportunityMasterModel({
       entryDate,
       enteredBy,
       client,
@@ -130,7 +130,7 @@ class OpportunityController {
     const { id } = req.params;
     let opportunity = await OpportunityMasterModel.findById(id)
       // .populate("enteredBy")
-      .populate("associatedTender")
+      // .populate("associatedTender")
       .populate("solution")
       .populate("subSolution")
       // .populate("salesChamp")
@@ -151,20 +151,28 @@ class OpportunityController {
   static updateOpportunity = catchAsyncError(async (req, res, next, session) => {
     const { id } = req.params;
     let updateData = req.body;
-    const opportunity = await OpportunityMasterModel.findById(id)
+    console.log("updated op dta", updateData)
+    let opportunity = await OpportunityMasterModel.findById(id)
     if (!opportunity) throw new ServerError("NotFound", "Opportunity");
 
-    await validateOpportunityId(updateData, opportunity);
+    // await validateOpportunityId(updateData, opportunity);
 
     Object.keys(updateData).forEach((key) => {
-      if(!key == 'revenue')
-      opportunity[key] = updateData[key];
+        if(key != 'revenue')
+         opportunity[key] = updateData[key];
     });
 
-    const updatedOpportunity = await opportunity.save({session});
-    updatedOpportunity =  await OpportunityMasterModel.findById(updatedOpportunity._id).populate('revenue')
+    console.log("opp after objetkey", opportunity)
+    
+    await opportunity.save();
+    console.log("opportunity after save", opportunity)
+    let updatedOpportunity =  await OpportunityMasterModel.findById(opportunity._id).populate('revenue')
     updateTotalRevenueAndSales(updatedOpportunity);
-    await updatedOpportunity.save({session})
+    console.log("opportunity after revenue", updatedOpportunity)
+    await updatedOpportunity.save()
+
+    console.log("opp after total revenue save", updatedOpportunity)
+
 
     res.status(200).json({
       status: "success",
