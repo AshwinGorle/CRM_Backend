@@ -2,6 +2,7 @@ import csv from "csvtojson";
 import ExcelJS from "exceljs";
 import fs from "fs";
 import path from "path";
+import { Buffer } from "buffer";
 import ClassificationModel from "../../models/ConfigModels/ClientMaster/ClassificationModel.js";
 import IncorporationTypeModel from "../../models/ConfigModels/ClientMaster/IncorporationTypeModel.js";
 import RelationshipStatusModel from "../../models/ConfigModels/ClientMaster/RelationshipStatusModel.js";
@@ -23,11 +24,18 @@ import SalesSubStageMasterModel from "../../models/Configuration/SalesSubStageMa
 import TenderStageModel from "../../models/ConfigModels/TenderMaster/TenderStageModel.js";
 import TenderMasterModel from "../../models/TenderMasterModel.js";
 import RevenueMasterModel from "../../models/RevenueMasterModel.js";
-import { clientFieldMapping, contactFieldMap, opportunityFieldMap, tenderFieldMap } from "./fieldMap.js";
-import { catchAsyncError  } from "../../middlewares/catchAsyncError.middleware.js";
+import {
+  clientFieldMapping,
+  contactFieldMap,
+  opportunityFieldMap,
+  tenderFieldMap,
+} from "./fieldMap.js";
+import { catchAsyncError } from "../../middlewares/catchAsyncError.middleware.js";
+import { Readable } from "stream";
+import uploadStreamToCloudinary from "../../utils/uploadStreamToCloudinary.js";
+import uploadAndGetAvatarUrl from "../../utils/uploadAndGetAvatarUrl.utils.js";
 
 class UploadController {
-
   static getFormattedData = async (bulkData, resource) => {
     const classificationMap = await ClassificationModel.find({}).then(
       (classifications) => {
@@ -249,7 +257,8 @@ class UploadController {
               formattedRow[modelField] = null; // Implement getSolutionIdByName function
               break;
             case "bond":
-              formattedRow[modelField] = bulkData[csvField] == "Y" ? true : false; // Implement getSolutionIdByName function
+              formattedRow[modelField] =
+                bulkData[csvField] == "Y" ? true : false; // Implement getSolutionIdByName function
               break;
             default:
               formattedRow[modelField] = row[csvField];
@@ -333,57 +342,138 @@ class UploadController {
     const uniqueName = Array.from({ length: 4 }, () =>
       String.fromCharCode(65 + Math.floor(Math.random() * 26))
     ).join("");
-    const outputFilePath = `CorrectionFiles/${resource}_${uniqueName}.xlsx`;
-    await workbook.xlsx.writeFile(outputFilePath);
-    const correctionFileUrl = await uploadToCloudinary(
-      outputFilePath,
+    const buffer = await workbook.xlsx.writeBuffer();
+    const file = {
+      buffer: buffer,
+      originalname: `${resource}-${uniqueName}.xlsx`,
+    };
+    const correctionFileUrl = await uploadAndGetAvatarUrl(
+      file,
       `CRM/${resource}/correctionFiles`,
-      `${resource}-${uniqueName}`,
-      2
+      file.originalname,
+      "stream"
     );
-    fs.unlinkSync(outputFilePath);
+
     return correctionFileUrl;
   };
+  // static getCorrectionFile = async (
+  //   bulkData,
+  //   resource,
+  //   analysisResult,
+  //   formattedData
+  // ) => {
+  //   let csvToModelMap = null;
+  //   switch (resource) {
+  //     case "client":
+  //       csvToModelMap = clientFieldMapping;
+  //       break;
+  //     case "contact":
+  //       csvToModelMap = contactFieldMap;
+  //       break;
+  //     case "opportunity":
+  //       csvToModelMap = opportunityFieldMap;
+  //       break;
+  //     case "tender":
+  //       csvToModelMap = tenderFieldMap;
+  //       break;
+  //   }
+
+  //   const workbook = new ExcelJS.Workbook();
+  //   const worksheet = workbook.addWorksheet("Sheet1");
+
+  //   // Write headers
+  //   const headers = Object.keys(csvToModelMap).map((field) => field);
+  //   worksheet.addRow(headers);
+  //   formattedData.forEach((row, rowIdx) => {
+  //     worksheet.addRow(
+  //       headers.map(
+  //         (header) => row[csvToModelMap[header]] || bulkData[rowIdx][header]
+  //       )
+  //     );
+  //   });
+
+  //   // Apply highlights based on the analysisResult
+  //   Object.keys(analysisResult).forEach((rowIdx) => {
+  //     const cells = analysisResult[rowIdx];
+  //     cells.forEach((cell) => {
+  //       Object.keys(cell).forEach((colIdx) => {
+  //         const cellAddress = worksheet.getCell(
+  //           parseInt(rowIdx) + 2,
+  //           parseInt(colIdx) + 1
+  //         );
+  //         cellAddress.fill = {
+  //           type: "pattern",
+  //           pattern: "solid",
+  //           fgColor: { argb: "FFFFC0C0" }, // Light red background
+  //         };
+  //       });
+  //     });
+  //   });
+
+  //   // Write the workbook to a file
+  //   const uniqueName = Array.from({ length: 4 }, () =>
+  //     String.fromCharCode(65 + Math.floor(Math.random() * 26))
+  //   ).join("");
+  //   const outputFilePath = `CorrectionFiles/${resource}_${uniqueName}.xlsx`;
+  //   await workbook.xlsx.writeFile(outputFilePath);
+  //   const correctionFileUrl = await uploadToCloudinary(
+  //     outputFilePath,
+  //     `CRM/${resource}/correctionFiles`,
+  //     `${resource}-${uniqueName}`,
+  //     2
+  //   );
+  //   fs.unlinkSync(outputFilePath);
+  //   return correctionFileUrl;
+  // };
+  static streamToBuffer = async (stream) => {
+    const chunks = [];
+    for await (const chunk of stream) {
+        chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+    }
+    return Buffer.concat(chunks);
+};
 
   static uploadClientInBulk = catchAsyncError(async (req, res) => {
-    const csvFilePath = req.file.path;
+    const file = req.file;
+
     let { check } = req.query;
-    check = check === 'true' ? true : false;
-    const bulkData = await csv().fromFile(csvFilePath);
+    check = check === "true" ? true : false;
+    const stream = Readable.from(file.buffer.toString());
+    const bulkData = await csv().fromStream(stream);
+    // console.log("csv from steam : ", bulkData);
     const { formattedData, analysisResult } = await this.getFormattedData(
       bulkData,
       "client"
     );
-    
+
     if (!check && Object.keys(analysisResult).length === 0) {
-      console.log("directory name----");
       const clients = await ClientMasterModel.insertMany(formattedData);
-      console.log("all clients", clients);
+      const uniqueName = new Date().toLocaleString();
       const ids = clients.map((client) => client._id.toString());
       const csv = parse(ids.map((id) => ({ id })));
-      const tempUploadDir = path.join(process.cwd(), "tempUpload");
+      const csvStream = new Readable();
+      csvStream.push(csv);
+      csvStream.push(null);
+      const buffer = await this.streamToBuffer(csvStream);
+      const file = {
+        buffer: buffer,
+        originalname: `client-${uniqueName}.csv`,
+      };
       // Ensure the directory exists (create if it doesn't)
-      if (!check === "true" && !fs.existsSync(tempUploadDir)) {
-        fs.mkdirSync(tempUploadDir);
-      }
-      const filePath = path.join(tempUploadDir, "filename.csv");
-      fs.writeFileSync(filePath, csv);
-      const uniqueName = new Date().toLocaleString();
-      const fileUrl = await uploadToCloudinary(
-        filePath,
+      const fileUrl = await uploadAndGetAvatarUrl(
+        file,
         "CRM/Client/BulkUploads",
         uniqueName,
-        2
+        "stream"
       );
-      fs.unlinkSync(filePath);
       res.send({
         status: "success",
-        type : "backup",
+        type: "backup",
         message: "Client bulk import successful",
         data: { url: fileUrl, client: clients },
       });
     } else {
-      console.log("jumped in else")
+      console.log("jumped in else");
       const correctionFileUrl = await this.getCorrectionFile(
         bulkData,
         "client",
@@ -392,12 +482,66 @@ class UploadController {
       );
       res.json({
         status: "success",
-        type:"correction",
+        type: "correction",
         message: "There are corrections in this client file!",
         data: { url: correctionFileUrl },
       });
     }
   });
+  // static uploadClientInBulk = catchAsyncError(async (req, res) => {
+  //   const csvFilePath = req.file.path;
+  //   let { check } = req.query;
+  //   check = check === 'true' ? true : false;
+  //   const bulkData = await csv().fromFile(csvFilePath);
+  //   const { formattedData, analysisResult } = await this.getFormattedData(
+  //     bulkData,
+  //     "client"
+  //   );
+
+  //   if (!check && Object.keys(analysisResult).length === 0) {
+  //     console.log("directory name----");
+  //     const clients = await ClientMasterModel.insertMany(formattedData);
+  //     console.log("all clients", clients);
+  //     const ids = clients.map((client) => client._id.toString());
+  //     const csv = parse(ids.map((id) => ({ id })));
+  //     const tempUploadDir = path.join(process.cwd(), "tempUpload");
+  //     // Ensure the directory exists (create if it doesn't)
+  //     if (!check === "true" && !fs.existsSync(tempUploadDir)) {
+  //       fs.mkdirSync(tempUploadDir);
+  //     }
+  //     const filePath = path.join(tempUploadDir, "filename.csv");
+  //     fs.writeFileSync(filePath, csv);
+  //     const uniqueName = new Date().toLocaleString();
+  //     const fileUrl = await uploadToCloudinary(
+  //       filePath,
+  //       "CRM/Client/BulkUploads",
+  //       uniqueName,
+  //       2
+  //     );
+  //     fs.unlinkSync(filePath);
+  //     res.send({
+  //       status: "success",
+  //       type : "backup",
+  //       message: "Client bulk import successful",
+  //       data: { url: fileUrl, client: clients },
+  //     });
+  //   } else {
+  //     console.log("jumped in else")
+  //     const correctionFileUrl = await this.getCorrectionFile(
+  //       bulkData,
+  //       "client",
+  //       analysisResult,
+  //       formattedData
+  //     );
+  //     res.json({
+  //       status: "success",
+  //       type:"correction",
+  //       message: "There are corrections in this client file!",
+  //       data: { url: correctionFileUrl },
+  //     });
+  //   }
+  // });
+
   static uploadContactInBulk = catchAsyncError(async (req, res) => {
     const csvFilePath = req.file.path;
     let { check } = req.query;
@@ -408,7 +552,7 @@ class UploadController {
     );
     console.log("analysis result ---", analysisResult);
     console.log("formatted data ---", formattedData);
-    check = check === 'true' ? true : false;
+    check = check === "true" ? true : false;
     if (!check && Object.keys(analysisResult).length === 0) {
       console.log("directory name----");
       const contacts = await ContactMasterModel.insertMany(formattedData);
@@ -490,7 +634,7 @@ class UploadController {
     );
     console.log("analysis result ---", analysisResult);
     console.log("formatted data ---", formattedData);
-    check = check === 'true' ? true : false;
+    check = check === "true" ? true : false;
     if (!check && Object.keys(analysisResult).length === 0) {
       console.log("directory name----");
       const revenueDate = this.parseRevenueData(bulkData);
@@ -538,7 +682,12 @@ class UploadController {
         formattedData
       );
       console.log("correction file path", correctionFileUrl);
-      return res.json({status : "success", message : "There are corrections in Opp. file!", type : "correction" ,data : {url : correctionFileUrl}})
+      return res.json({
+        status: "success",
+        message: "There are corrections in Opp. file!",
+        type: "correction",
+        data: { url: correctionFileUrl },
+      });
     }
   });
 
@@ -554,7 +703,7 @@ class UploadController {
     console.log("analysis result ---", analysisResult);
     console.log("formatted data ---", formattedData);
     console.log("bulk data------", bulkData);
-    check = check === 'true' ? true : false;
+    check = check === "true" ? true : false;
     if (!check && Object.keys(analysisResult).length === 0) {
       console.log("directory name----");
       const tenders = await TenderMasterModel.insertMany(formattedData);
@@ -579,7 +728,7 @@ class UploadController {
       res.send({
         status: "success",
         message: "Tender bulk import successful!",
-        data: {url: fileUrl, tenders: tenders},
+        data: { url: fileUrl, tenders: tenders },
       });
     } else {
       const correctionFileUrl = await this.getCorrectionFile(

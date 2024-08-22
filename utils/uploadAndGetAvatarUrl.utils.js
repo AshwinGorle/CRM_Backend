@@ -7,9 +7,8 @@ const getFileExtension = (fileName)=>{
 }
 
 const uploadAndGetAvatarUrl = async (file, resource, resourceId, type) => {
-    const fileExtension = getFileExtension(file.originalname)
     if(type === 'stream'){
-        const avatarUrl = await uploadStreamToCloudinary(file.buffer,`CRM/profile/${resource}`, resourceId,fileExtension, 2);
+        const avatarUrl = await uploadStreamToCloudinary(file,`CRM/profile/${resource}`, resourceId, 2);
         return avatarUrl
     }else{
     const avatarUrl = await uploadToCloudinary(path, `CRM/Profile/${resource}`,resourceId,2);

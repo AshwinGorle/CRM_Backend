@@ -7,7 +7,12 @@ cloudinary.config({
   api_secret: "BAE53B15sBunaCEbmg1gNQM5VV8",
 });
 
-const uploadStreamToCloudinary = async (buffer, folderName, fileName, fileExtension ,retries = 2) => {
+const getFileExtension = (fileName)=>{
+  return fileName.split('.').pop();
+}
+
+const uploadStreamToCloudinary = async (file, folderName, fileName, retries = 2) => {
+  const fileExtension = getFileExtension(file.originalname)
   return new Promise((resolve, reject) => {
     const uploadFunction = (retryCount) => {
       cloudinary.uploader.upload_stream(
@@ -30,7 +35,7 @@ const uploadStreamToCloudinary = async (buffer, folderName, fileName, fileExtens
             resolve(result?.secure_url); // Return the secure URL of the uploaded file
           }
         }
-      ).end(buffer);
+      ).end(file.buffer);
     };
 
     uploadFunction(retries);
