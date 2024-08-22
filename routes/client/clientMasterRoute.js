@@ -8,7 +8,7 @@ const clientMasterRouter = Router();
 clientMasterRouter.use('/config',clientMasterConfigRouter);
 clientMasterRouter.get('/', ClientMasterController.getAllClient);
 clientMasterRouter.get('/:id', ClientMasterController.getClientById);
-clientMasterRouter.post('/', upload.single('avatar') ,ClientMasterController.createClient);
+clientMasterRouter.post('/', uploadStream.single('avatar') ,ClientMasterController.createClient);
 clientMasterRouter.put('/:id', uploadStream.single('avatar') ,ClientMasterController.updateClient);
 clientMasterRouter.delete('/:id', ClientMasterController.deleteClient);
 

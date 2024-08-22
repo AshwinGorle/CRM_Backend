@@ -59,9 +59,10 @@ class StaffController {
     if (req.file) {
       console.log("file ", req.file);
       staff.avatar = await uploadAndGetAvatarUrl(
-        req.file.path,
+        req.file,
         "staff",
-        staff._id
+        staff._id,
+        "stream"
       );
     }
     await staff.save();
@@ -83,9 +84,10 @@ class StaffController {
     });
     if (req.file) {
       staff.avatar = await uploadAndGetAvatarUrl(
-        req.file.path,
+        req.file,
         "staff",
-        staff._id
+        staff._id,
+        "stream"
       );
     }
     await staff.save();

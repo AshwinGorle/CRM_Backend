@@ -3,6 +3,7 @@ import { clientError } from "../../config/responseMessage.js";
 import { catchAsyncError } from "../../middlewares/catchAsyncError.middleware.js";
 import ContactMasterModel from "../../models/ContactMasterModel.js";
 import { ServerError } from "../../utils/customErrorHandler.utils.js";
+import uploadAndGetAvatarUrl from "../../utils/uploadAndGetAvatarUrl.utils.js";
 
 class ContactMasterController {
   static createContact = catchAsyncError(async (req, res, next) => {
@@ -73,7 +74,9 @@ class ContactMasterController {
       detailsConfirmation,
       notes,
     });
-
+    if(req.file){
+      newContact.avatar = await uploadAndGetAvatarUrl(req.file,"contact",contact._id, "stream");
+    }
     // Save the instance
     await newContact.save();
     res
@@ -138,6 +141,10 @@ class ContactMasterController {
     Object.keys(updateData).forEach((key) => {
       contact[key] = updateData[key];
     });
+
+    if(req.file){
+      contact.avatar = await uploadAndGetAvatarUrl(req.file,"contact",contact._id, "stream");
+    }
     console.log("contact before save ", contact);
     const updatedContact = await contact.save();
 

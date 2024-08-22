@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
 
 const ContactMasterSchema = new mongoose.Schema({
+  avatar : {
+   type : String,
+   default : null
+  },
   gender: {
     type: String,
     enum: ["M", "F", "O"],

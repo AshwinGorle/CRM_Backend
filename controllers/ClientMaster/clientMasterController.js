@@ -90,7 +90,7 @@ class ClientMasterController {
         
         console.log("req.file---", req.file);
         if (req.file) {
-            const avatarUrl = await uploadAndGetAvatarUrl(req.file.path, 'client', newClient._id);
+            const avatarUrl = await uploadAndGetAvatarUrl(req.file, 'client', newClient._id, "stream");
             newClient.avatar = avatarUrl;
         }
     
