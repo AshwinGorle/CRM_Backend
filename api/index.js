@@ -1,4 +1,5 @@
 import express from 'express';
+import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import clientMasterRouter from '../routes/client/clientMasterRoute.js';
 import connectDb from "../connectDb.js"
@@ -13,6 +14,7 @@ import businessDevelopmentRouter from '../routes/business Development/businessDe
 import opportunityRouter from '../routes/opportunity/opportunityRoute.js'
 import homePage from '../home.js';
 import uploadRouter from '../routes/upload/uloadTestRoute.js';
+import authRouter from '../routes/Authentication/AuthRoute.js';
 const app = express();
 dotenv.config();
 const corsOptions = {
@@ -23,11 +25,14 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.urlencoded({extended : false}));
 app.use(express.json());
+app.use(cookieParser());
 
 const PORT = process.env.PORT || 5000;
 const DB_URL = process.env.DATABASE_URL; 
 connectDb(DB_URL);
+
 app.get('/',homePage);
+app.use('/auth', authRouter);
 app.use('/client', clientMasterRouter);
 app.use('/team', teamRouter );
 app.use('/contact', contactMasterRouter);
