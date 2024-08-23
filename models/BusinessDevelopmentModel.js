@@ -50,6 +50,10 @@ const BusinessDevelopmentSchema = new mongoose.Schema({
     potentialOffset: {
         type: Number
     },
+    potentialRevenue: {
+        type : Number,
+        default : 0
+    },
     Notes: [{
         type: String
     }]

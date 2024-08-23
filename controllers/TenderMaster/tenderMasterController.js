@@ -6,33 +6,10 @@ import {
 } from "../../utils/customErrorHandler.utils.js";
 import ClientMasterModel from "../../models/ClientMasterModel.js";
 import mongoose from "mongoose";
+import { checkForSubmissionDate, checkForTenderId } from "../../utils/tender.utils.js";
 class TenderMasterController {
   // Create a new TenderMaster entry
-  static generateTenderId = (territoryName, clientName, date) => {
-    const territoryPart = territoryName
-      .toUpperCase()
-      .replace(/\s+/g, "")
-      .slice(0, 4);
-    const clientPart = clientName.toUpperCase().replace(/\s+/g, "").slice(0, 3);
-    const monthAbbreviations = [
-      "JA",
-      "FE",
-      "MR",
-      "AP",
-      "MA",
-      "JN",
-      "JL",
-      "AU",
-      "SE",
-      "OC",
-      "NO",
-      "DE",
-    ];
-    const monthPart = monthAbbreviations[new Date(date).getMonth()];
-    const numberPart = Math.floor(Math.random() * 90 + 10).toString();
-    const customID = `TN-${territoryPart}-${clientPart}-${monthPart}-${numberPart}`;
-    return customID;
-  };
+ 
 
   static createTenderMaster = catchAsyncError(async (req, res, next) => {
     const {
@@ -55,7 +32,6 @@ class TenderMasterController {
       bidManager,
       stage,
       stageExplanation,
-      submissionDate,
     } = req.body;
 
     // Validate required fields
@@ -82,28 +58,16 @@ class TenderMasterController {
       officer,
       bidManager,
       stage,
-      stageExplanation,
-      submissionDate,
+      stageExplanation
     });
-
-    if (client) {
-      const clientDetails = await ClientMasterModel.findById(client)
-        .select("name territory")
-        .populate("territory");
-      const territory = clientDetails.territory.label;
-      if (territory) {
-        const tenderId = this.generateTenderId(
-          territory,
-          clientDetails.name,
-          new Date()
-        );
-        console.log("Territory Id ", tenderId);
-        newTender.customId = tenderId;
-      }
-    }
+    if(newTender.stage) newTender.submissionDate =  await checkForSubmissionDate(newTender.stage); // handling submission date
+    if (client) newTender.customId =  await checkForTenderId(client)  // handling custom tender Id
 
     // Save the instance
+    console.log("newTender before save : ", newTender)
     await newTender.save();
+    console.log("newTender after save : ", newTender)
+    
     res.status(201).json({
       status: "success",
       message: "Tender created successfully",
@@ -162,30 +126,18 @@ class TenderMasterController {
   static updateTenderMaster = catchAsyncError(async (req, res, next) => {
     const { id } = req.params;
     let updateData = req.body;
-
+    console.log("updating dat", updateData)
     const tenderMaster = await TenderMasterModel.findById(id);
     if (!tenderMaster) throw new ServerError("NotFound", "TenderMaster");
-
-    //checking tender id
-    if (updateData.client && !tenderMaster.customId) {
-      const clientDetails = await ClientMasterModel.findById(updateData.client)
-        .select("name territory")
-        .populate("territory");
-      const territory = clientDetails.territory.label;
-      if (territory) {
-        const tenderId = this.generateTenderId(
-          territory,
-          clientDetails.name,
-          new Date()
-        );
-        console.log("Territory Id ", tenderId);
-        updateData = { ...updateData, customId: tenderId };
-      }
-    }
-
+    if(updateData.stage) tenderMaster.submissionDate =  await checkForSubmissionDate(updateData.stage); // handling submission date
+    if (updateData.client && !tenderMaster.customId) updateData['customId'] =  await checkForTenderId(updateData.client)  // handling tender Id
+  
     Object.keys(updateData).forEach((key) => {
+      if(key != "submissionDate")
       tenderMaster[key] = updateData[key];
     });
+    
+    
     const updatedTenderMaster = await tenderMaster.save();
 
     res.status(200).json({

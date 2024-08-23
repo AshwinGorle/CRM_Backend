@@ -37,7 +37,7 @@ export const ClientMasterSchema = new mongoose.Schema({
     },
     territory :{
         type : mongoose.Schema.Types.ObjectId,
-        // required : true,
+        required : true,
         ref : "TerritoryMaster"
     },
     // pursuedOpportunityValue :{

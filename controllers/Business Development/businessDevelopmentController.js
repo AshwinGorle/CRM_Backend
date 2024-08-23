@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { catchAsyncError } from "../../middlewares/catchAsyncError.middleware.js";
 import BusinessDevelopmentModel from "../../models/BusinessDevelopmentModel.js";
 import { ServerError } from "../../utils/customErrorHandler.utils.js";
+import { checkForPotentialRevenue } from "../../utils/BD.utils.js";
 
 class BusinessDevelopmentController {
   static createBusinessDevelopment = catchAsyncError(async (req, res, next) => {
@@ -53,6 +54,8 @@ class BusinessDevelopmentController {
       potentialOffset,
       Notes,
     });
+    newBusinessDevelopment.potentialRevenue = checkForPotentialRevenue(newBusinessDevelopment);
+    console.log("bd after creating potential Revenue : ", newBusinessDevelopment);
 
     await newBusinessDevelopment.save();
 
@@ -125,7 +128,8 @@ class BusinessDevelopmentController {
     Object.keys(updateData).forEach((key) => {
       businessDevelopment[key] = updateData[key];
     });
-
+    businessDevelopment.potentialRevenue = checkForPotentialRevenue(businessDevelopment); 
+    console.log("bd after updating potential Revenue : ", businessDevelopment);
     const updatedBusinessDevelopment = await businessDevelopment.save();
 
     res.status(200).json({
