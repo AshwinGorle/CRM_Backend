@@ -79,7 +79,8 @@ class RegistrationMasterController {
       .populate("client")
       .populate("enteredBy")
       .populate("registrationChamp")
-      .populate("primaryContact");
+      .populate("primaryContact")
+      .populate("registrationStatus")
 
     res.status(200).json({
       status: "success",

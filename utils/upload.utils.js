@@ -400,7 +400,6 @@ export const sendBulkUploadResponse = async(res, check ,bulkData, formattedData,
     }
   }
 
-
 export const  parseRevenueData =( bulkData)=> {
     let yearQuarterPositions = [];
     const firstRow = bulkData[0]; // First row contains the headers
