@@ -4,6 +4,9 @@ import OpportunityMasterModel from "../../models/OpportunityMasterModel.js";
 import { ServerError } from "../../utils/customErrorHandler.utils.js";
 import ClientMasterModel from "../../models/ClientMasterModel.js";
 import { updateTotalRevenueAndSales, validateOpportunityId } from "../../utils/opportunity.utils.js";
+import RevenueMasterController from "./revenueController.js";
+import RevenueController from "./revenueController.js";
+import { opportunityFieldMap } from "../upload/fieldMap.js";
 class OpportunityController {
   static createOpportunity = catchAsyncError(async (req, res, next, session) => {
     let {
@@ -25,6 +28,7 @@ class OpportunityController {
       confidenceLevel,
     } = req.body;
     // Validate required fields
+    console.log("revenue from frontend :  ", revenue)
     if (!entryDate || !enteredBy || !projectName || !stageClarification) {
       return res.status(400).json({
         status: "failed",
@@ -54,21 +58,26 @@ class OpportunityController {
       stageClarification,
       salesTopLine,
       offsets,
-      revenue,
       confidenceLevel,
     });
     //generating customId for Opp.
     await validateOpportunityId(req.body, newOpportunity);
+    //handling revenues
+    if(revenue){
+      await RevenueController.handleRevenue(revenue, newOpportunity, session);
+    }
     await newOpportunity.save({session});
-    newOpportunity = await OpportunityMasterModel.findById(newOpportunity._id).populate('revenue');
+    console.log("opportunity after inserting revenue : ",newOpportunity);
+    newOpportunity = await OpportunityMasterModel.findById(newOpportunity._id).populate('revenue').session(session);
     updateTotalRevenueAndSales(newOpportunity);
+    console.log("opportunity after expected sales calculation ", newOpportunity)
     await newOpportunity.save({session});
-    res.status(201).json({
+    return res.status(201).json({
       status: "success",
       message: "Opportunity created successfully",
       data: newOpportunity,
     });
-  });
+  }, true);
 
   static getAllOpportunities = catchAsyncError(async (req, res, next) => {
     const limit = parseInt(req.query.limit) || 12;
@@ -148,7 +157,10 @@ class OpportunityController {
     });
   });
 
+ 
+
   static updateOpportunity = catchAsyncError(async (req, res, next, session) => {
+    console.log("update request called---------")
     const { id } = req.params;
     let updateData = req.body;
     console.log("updated op dta", updateData)
@@ -162,14 +174,16 @@ class OpportunityController {
          opportunity[key] = updateData[key];
     });
 
-    console.log("opp after objetkey", opportunity)
+    if(updateData.revenue){
+       await RevenueController.handleRevenue(updateData.revenue, opportunity, session);
+    }
     
-    await opportunity.save();
+    await opportunity.save({session});
     console.log("opportunity after save", opportunity)
-    let updatedOpportunity =  await OpportunityMasterModel.findById(opportunity._id).populate('revenue')
+    let updatedOpportunity =  await OpportunityMasterModel.findById(opportunity._id).populate('revenue').session(session)
     updateTotalRevenueAndSales(updatedOpportunity);
     console.log("opportunity after revenue", updatedOpportunity)
-    await updatedOpportunity.save()
+    await updatedOpportunity.save({session})
 
     console.log("opp after total revenue save", updatedOpportunity)
 
@@ -179,7 +193,7 @@ class OpportunityController {
       message: "Opportunity updated successfully",
       data: updatedOpportunity,
     });
-  });
+  }, true);
 
   static deleteOpportunity = catchAsyncError(async (req, res, next) => {
     const { id } = req.params;

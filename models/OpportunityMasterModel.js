@@ -78,8 +78,9 @@ const OpportunityMasterSchema = new mongoose.Schema({
   },
 
   confidenceLevel : {
-    type : Number,
-    enum: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+    type: Number,
+    min: 0,    // Minimum value of 0
+    max: 100,  // Maximum value of 100
     default : 0
   },
 

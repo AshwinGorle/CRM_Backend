@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 export const catchAsyncError = (theFun, withTransaction = false) => async (req, res, next) => {
-    const session  = null;
+    let session  = null;
     if(withTransaction){
         session = await mongoose.startSession();
         session.startTransaction();

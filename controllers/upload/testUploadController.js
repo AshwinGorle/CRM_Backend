@@ -34,6 +34,7 @@ import { catchAsyncError } from "../../middlewares/catchAsyncError.middleware.js
 import { Readable } from "stream";
 import uploadStreamToCloudinary from "../../utils/uploadStreamToCloudinary.js";
 import uploadAndGetAvatarUrl from "../../utils/uploadAndGetAvatarUrl.utils.js";
+import { parseRevenueData } from "../../utils/upload.utils.js";
 
 class UploadController {
   static getFormattedData = async (bulkData, resource) => {
@@ -433,19 +434,78 @@ class UploadController {
     return Buffer.concat(chunks);
 };
 
+  static sendBulkUploadResponse = async(res, check ,bulkData, formattedData, analysisResult, resourceType )=>{
+    let EntityModel = null;
+    switch(resourceType){
+      case 'client' : EntityModel = ClientMasterModel;
+      break;
+      case 'contact' : EntityModel = ContactMasterModel;
+      break;
+      case 'tender' : EntityModel = TenderMasterModel;
+      break;
+      case 'opportunity' : EntityModel = OpportunityMasterModel;
+      break;
+    }
+
+    if (!check && Object.keys(analysisResult).length === 0) {
+      const entities = await EntityModel.insertMany(formattedData);
+      const uniqueName = new Date().toLocaleString();
+      const ids = entities.map((client) => client._id.toString());
+      const csv = parse(ids.map((id) => ({ id })));
+      const csvStream = new Readable();
+      csvStream.push(csv);
+      csvStream.push(null);
+      const buffer = await this.streamToBuffer(csvStream);
+      const file = {
+        buffer: buffer,
+        originalname: `${resourceType}-${uniqueName}.csv`,
+      };
+      // Ensure the directory exists (create if it doesn't)
+      const fileUrl = await uploadAndGetAvatarUrl(
+        file,
+        `CRM/BulkUploads/Backup/${resourceType}`,
+        uniqueName,
+        "stream"
+      );
+      res.send({
+        status: "success",
+        type: "backup",
+        message: `${resourceType} bulk import successful`,
+        data: { url: fileUrl },
+      });
+    }else {
+      console.log("jumped in else");
+      const correctionFileUrl = await this.getCorrectionFile(
+        bulkData,
+        `${resourceType}`,
+        analysisResult,
+        formattedData
+      );
+      res.json({
+        status: "success",
+        type: "correction",
+        message: `There are corrections in this ${resourceType} file!`,
+        data: { url: correctionFileUrl },
+      });
+    }
+  }
+  
+
   static uploadClientInBulk = catchAsyncError(async (req, res) => {
-    const file = req.file;
 
     let { check } = req.query;
     check = check === "true" ? true : false;
-    const stream = Readable.from(file.buffer.toString());
+    const stream = Readable.from(req.file.buffer.toString());
     const bulkData = await csv().fromStream(stream);
     // console.log("csv from steam : ", bulkData);
     const { formattedData, analysisResult } = await this.getFormattedData(
       bulkData,
-      "client"
+      `client`
     );
 
+    await this.sendBulkUploadResponse(res, check, bulkData, formattedData, analysisResult, 'client');
+    
+    return
     if (!check && Object.keys(analysisResult).length === 0) {
       const clients = await ClientMasterModel.insertMany(formattedData);
       const uniqueName = new Date().toLocaleString();
@@ -543,15 +603,19 @@ class UploadController {
   // });
 
   static uploadContactInBulk = catchAsyncError(async (req, res) => {
-    const csvFilePath = req.file.path;
+    // const csvFilePath = req.file.path;
     let { check } = req.query;
-    const bulkData = await csv().fromFile(csvFilePath);
+    check = check === "true" ? true : false;
+    const stream = Readable.from(req.file.buffer.toString());
+    const bulkData = await csv().fromStream(stream);
     const { formattedData, analysisResult } = await this.getFormattedData(
       bulkData,
       "contact"
     );
     console.log("analysis result ---", analysisResult);
     console.log("formatted data ---", formattedData);
+    await this.sendBulkUploadResponse(res, check, bulkData, formattedData, analysisResult, 'contact');
+    return
     check = check === "true" ? true : false;
     if (!check && Object.keys(analysisResult).length === 0) {
       console.log("directory name----");
@@ -617,9 +681,10 @@ class UploadController {
   };
 
   static uploadOpportunityInBulk = catchAsyncError(async (req, res) => {
-    const csvFilePath = req.file.path;
     let { check } = req.query;
-    const bulkData = await csv().fromFile(csvFilePath);
+    check = check == 'true' ? true : false;
+    const stream = Readable.from(req.file.buffer.toString());
+    const bulkData = await csv().fromStream(stream);
     const indexToRemove = 0;
     const updatedBulkData = bulkData
       .slice(0, indexToRemove)
@@ -632,14 +697,26 @@ class UploadController {
       updatedBulkData,
       "opportunity"
     );
+    
+
+    const revenueData = parseRevenueData(bulkData);
+      const revenueIdData = await this.generateRevenues(revenueData);
+      console.log(revenueData);
+      console.log(revenueIdData);
+      revenueIdData.forEach((revenueArray, idx) => {
+        formattedData[idx]["revenue"] = revenueArray;
+      });
+    
     console.log("analysis result ---", analysisResult);
-    console.log("formatted data ---", formattedData);
-    check = check === "true" ? true : false;
+    console.log("formatted data after revenue---", formattedData);
+    
+    await this.sendBulkUploadResponse(res, check, bulkData, formattedData, analysisResult, 'opportunity');
+    return
     if (!check && Object.keys(analysisResult).length === 0) {
       console.log("directory name----");
-      const revenueDate = this.parseRevenueData(bulkData);
-      const revenueIdData = await this.generateRevenues(revenueDate);
-      console.log(revenueDate);
+      const revenueData = this.parseRevenueData(bulkData);
+      const revenueIdData = await this.generateRevenues(revenueData);
+      console.log(revenueData);
       console.log(revenueIdData);
       revenueIdData.forEach((revenueArray, idx) => {
         formattedData[idx]["revenue"] = revenueArray;
@@ -692,9 +769,11 @@ class UploadController {
   });
 
   static uploadTenderInBulk = catchAsyncError(async (req, res) => {
-    const csvFilePath = req.file.path;
+    
     let { check } = req.query;
-    const bulkData = await csv().fromFile(csvFilePath);
+    check = check === "true" ? true : false;
+    const stream = Readable.from(req.file.buffer.toString());
+    const bulkData = await csv().fromStream(stream);
     console.log("tender bulk data ", bulkData);
     const { formattedData, analysisResult } = await this.getFormattedData(
       bulkData,
@@ -702,8 +781,8 @@ class UploadController {
     );
     console.log("analysis result ---", analysisResult);
     console.log("formatted data ---", formattedData);
-    console.log("bulk data------", bulkData);
-    check = check === "true" ? true : false;
+    await this.sendBulkUploadResponse(res, check, bulkData, formattedData, analysisResult, 'tender');
+    return
     if (!check && Object.keys(analysisResult).length === 0) {
       console.log("directory name----");
       const tenders = await TenderMasterModel.insertMany(formattedData);
