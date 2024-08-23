@@ -1,6 +1,28 @@
 import ClientMasterModel from "../models/ClientMasterModel.js";
 import { ServerError } from "./customErrorHandler.utils.js";
+import RevenueMasterModel from "../models/RevenueMasterModel.js";
 
+export const generateRevenues = async (dataArray) => {
+  const resultArray = [];
+  for (let i = 0; i < dataArray.length; i++) {
+    const innerArray = dataArray[i];
+    const revenueIds = [];
+    for (let j = 0; j < innerArray.length; j++) {
+      const revenueData = innerArray[j];
+      const revenue = new RevenueMasterModel({
+        year: revenueData.year,
+        Q1: revenueData.Q1,
+        Q2: revenueData.Q2,
+        Q3: revenueData.Q3,
+        Q4: revenueData.Q4,
+      });
+      const savedRevenue = await revenue.save();
+      revenueIds.push(savedRevenue._id);
+    }
+    resultArray.push(revenueIds);
+  }
+  return resultArray;
+};
 
 export const updateTotalRevenueAndSales = (opportunity)=>{
     if(!opportunity) throw new ServerError("NotFound", "Opportunity inside updateRandS");
