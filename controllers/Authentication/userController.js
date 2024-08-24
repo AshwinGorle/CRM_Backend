@@ -29,7 +29,11 @@ class UserController {
       data: { page, limit, totalCount, users }
     });
 });
-
+ 
+static generateAlphabetPassword = (length = 4) =>
+  Array.from({ length }, () =>
+    String.fromCharCode(Math.random() < 0.5 ? 65 + Math.floor(Math.random() * 26) : 97 + Math.floor(Math.random() * 26))
+  ).join('');
 
   static getUser = catchAsyncError(async (req, res, next) => {
     const id = req.params.id;
@@ -43,6 +47,9 @@ class UserController {
   });
 
   static createUser = catchAsyncError(async (req, res, next) => {
+    const password = `AXRC${generateAlphabetPassword()}`;
+    req.password = process.env. password;
+    req.password_confirmation = password;
     AuthController.signup(req, res, true); // true for not sending otp
   });
 
