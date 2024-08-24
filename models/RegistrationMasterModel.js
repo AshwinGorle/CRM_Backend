@@ -21,7 +21,8 @@ const RegistrationMasterSchema = new mongoose.Schema({
         ref: "Staff"
     },
     status: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref : "RegistrationStatus",
         required: true,
         // enum: ["Yet to initiate", "In progress", "Stalled - not able to register", "Registered", "Registration Expired"]
     },
