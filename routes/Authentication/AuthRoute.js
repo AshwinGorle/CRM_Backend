@@ -10,6 +10,7 @@ authRouter.get("/protected", authenticateToken, (req, res) => {
 authRouter.post("/signup", AuthController.signup);
 authRouter.post("/login", AuthController.login);
 authRouter.post("/verify-otp", AuthController.verifyOtp);
+authRouter.post("/send-otp", AuthController.resendOtp);
 authRouter.post("/send-reset-password-email", AuthController.sendResetPasswordEmail);
 authRouter.post("/reset-password-with-otp", AuthController.resetPasswordWithOtp);
 authRouter.post("/change-password", authenticateToken, AuthController.changePassword);

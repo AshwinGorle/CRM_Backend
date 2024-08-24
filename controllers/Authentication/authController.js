@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import sendEmail from "../../utils/sendEmail.js";
 import crypto from "crypto";
+import { type } from "os";
 
 class AuthController {
   static homeFunction = (req, res) => {
@@ -20,14 +21,14 @@ class AuthController {
     }
   };
 
-  static signup = async (req, res) => {
-    const { name, phone, email, password, password_confirmation, gender, role = "viewer" } = req.body;
+  static signup = async (req, res, sendPassword=false) => {
+    const { firstName, lastName , phone, email, password, password_confirmation, gender, role = "viewer", address } = req.body;
 
     if (password !== password_confirmation) {
       return res.status(400).json({ status: "failed", message: "Passwords do not match" });
     }
 
-    if (!name || !phone || !email || !password || !gender || !role) {
+    if (!firstName || !lastName || !phone || !email || !password || !gender || !role) {
       return res.status(400).json({ status: "failed", message: "All fields are required" });
     }
 
@@ -42,9 +43,11 @@ class AuthController {
       const otp = crypto.randomInt(100000, 999999); // Generate OTP
 
       const newUser = await UserModel.create({
-        name,
+        firstName,
+        lastName,
         phone,
         email,
+        address,
         gender,
         role,
         password: hashedPassword,
@@ -53,13 +56,22 @@ class AuthController {
       });
 
       // Send OTP to user email
+      if(sendPassword){
+        await sendEmail({
+          to: email,
+          subject: "OTP for Account Verification",
+          html: `<p>Your password for CRM is <b>${password}</b> for email <b>${email}</b> . Please verify and change your password</p>`,
+        });
+      return res.status(201).json({ status: "success", message: `User created. Please verify the user.`, verified : false });
+      }else{
       await sendEmail({
         to: email,
         subject: "OTP for Account Verification",
         html: `<p>Your OTP for account verification is <b>${otp}</b>. It will expire in 10 minutes.</p>`,
       });
+      return res.status(201).json({ status: "success", message: `User created. Please verify your email with the OTP sent.`, verified : false });
+    }
 
-      res.status(201).json({ status: "success", message: `User created. Please verify your email with the OTP sent.` });
     } catch (err) {
       console.error("Signup error:", err);
       res.status(500).json({ status: "failed", message: "User not created", error: err });
@@ -108,7 +120,7 @@ class AuthController {
       }
 
       if (!user.isVerified) {
-        return res.status(400).json({ status: "failed", message: "Please verify your email first" });
+        return res.status(400).json({ status: "failed", message: "Please verify your email first", verified : false });
       }
 
       const token = jwt.sign({ userId: user._id, userEmail: user.email }, process.env.SECRET_KEY, { expiresIn: "10d" });
@@ -119,7 +131,7 @@ class AuthController {
         maxAge: 10 * 24 * 60 * 60 * 1000, // 10 days
       });
 
-      res.status(200).json({ status: "success", message: "Login successful", data: user });
+      res.status(200).json({ status: "success", message: "Login successful", data: user, verified : true });
     } catch (err) {
       console.error("Login error:", err);
       res.status(500).json({ status: "failed", message: "Something went wrong. Try again.", error: err });
@@ -158,6 +170,42 @@ class AuthController {
       res.status(200).json({ status: "success", message: "OTP sent successfully to your email." });
     } catch (err) {
       console.error("Send reset password email error:", err);
+      res.status(500).json({ status: "failed", message: "Something went wrong. Try again.", error: err });
+    }
+  };
+
+  static resendOtp = async (req, res) => {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ status: "failed", message: "Email is required" });
+    }
+
+    try {
+      const user = await UserModel.findOne({ email });
+      if (!user) {
+        return res.status(400).json({ status: "failed", message: "User not found" });
+      }
+
+      if (user.isVerified) {
+        return res.status(400).json({ status: "failed", message: "Email is already verified" });
+      }
+
+      const otp = crypto.randomInt(100000, 999999); // Generate a new OTP
+      user.otp = otp;
+      user.otpExpiresAt = Date.now() + 10 * 60 * 1000; // OTP valid for 10 minutes
+      await user.save();
+
+      // Resend OTP to user's email
+      await sendEmail({
+        to: email,
+        subject: "Resend OTP for Account Verification",
+        html: `<p>Your OTP for account verification is <b>${otp}</b>. It will expire in 10 minutes.</p>`,
+      });
+
+      res.status(200).json({ status: "success", message: "OTP resent successfully. Please check your email." });
+    } catch (err) {
+      console.error("Resend OTP error:", err);
       res.status(500).json({ status: "failed", message: "Something went wrong. Try again.", error: err });
     }
   };

@@ -2,7 +2,7 @@ import { catchAsyncError } from "../../middlewares/catchAsyncError.middleware.js
 import StaffModel from "../../models/StaffModel.js";
 import { ServerError } from "../../utils/customErrorHandler.utils.js";
 import uploadAndGetAvatarUrl from "../../utils/uploadAndGetAvatarUrl.utils.js";
-
+import UserModel from "../../models/UserModel.js";
 class StaffController {
   static getAllStaff = catchAsyncError(async (req, res, next) => {
     const page = parseInt(req.query.page) || 1;

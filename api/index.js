@@ -15,6 +15,7 @@ import opportunityRouter from '../routes/opportunity/opportunityRoute.js'
 import homePage from '../home.js';
 import uploadRouter from '../routes/upload/uloadTestRoute.js';
 import authRouter from '../routes/Authentication/AuthRoute.js';
+import userRouter from '../routes/Authentication/userRoute.js';
 const app = express();
 dotenv.config();
 const corsOptions = {
@@ -32,6 +33,7 @@ const DB_URL = process.env.DATABASE_URL;
 connectDb(DB_URL);
 
 app.get('/',homePage);
+app.use('/user',userRouter)
 app.use('/auth', authRouter);
 app.use('/client', clientMasterRouter);
 app.use('/team', teamRouter );
