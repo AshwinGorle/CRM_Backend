@@ -9,7 +9,7 @@ class BusinessDevelopmentController {
     const {
       client,
       entryDate,
-      enteredBy,
+      enteredBy = req.user._id,
       contact,
       connectionSource,
       potentialProject,
@@ -24,11 +24,11 @@ class BusinessDevelopmentController {
     } = req.body;
 
     // Validate required fields
-    if (!entryDate || !enteredBy) {
-      return res
-        .status(400)
-        .json({ status: "failed", message: "Required fields must be filled" });
-    }
+    // if () {
+    //   return res
+    //     .status(400)
+    //     .json({ status: "failed", message: "Required fields must be filled" });
+    // }
 
     // Manual validation for entryDate
     const validEntryDate = new Date(entryDate);

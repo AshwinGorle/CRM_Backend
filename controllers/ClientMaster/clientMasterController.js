@@ -16,7 +16,7 @@ class ClientMasterController {
         let {
             name,
             entryDate,
-            enteredBy,
+            enteredBy = req?.user?._id,
             industry,
             subIndustry,
             offering,
@@ -41,8 +41,8 @@ class ClientMasterController {
         // Validate required fields
         if (
             !name ||
-            !entryDate ||
-            !enteredBy ||
+            
+          
             !industry ||
             !subIndustry ||
             !territory ||

@@ -13,7 +13,7 @@ const OpportunityMasterSchema = new mongoose.Schema({
   enteredBy: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: "Staff",
+    ref: "User",
   },
   client: {
     type: mongoose.Schema.Types.ObjectId,
@@ -40,7 +40,7 @@ const OpportunityMasterSchema = new mongoose.Schema({
   },
   salesChamp: {
     type: mongoose.Schema.Types.ObjectId,
-    ref : "Staff"
+    ref : "User"
   },
   /////////////
   salesStage : {

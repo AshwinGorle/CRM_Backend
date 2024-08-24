@@ -16,6 +16,7 @@ import IndustryMasterModel from "../models/Configuration/IndustryMaster.js";
 import SubIndustryMasterModel from "../models/Configuration/SubIndustryMaster.js";
 import TerritoryMasterModel from "../models/Configuration/TerretoryMaster.js";
 import StaffModel from "../models/StaffModel.js";
+import UserModel from "../models/UserModel.js";
 import ArchetypeModel from "../models/ConfigModels/ContactMaster/ArchetypeModel.js";
 import SolutionMasterModel from "../models/Configuration/SolutionMaster.js";
 import SalesStageMasterModel from "../models/Configuration/SalesStageMaster.js";
@@ -77,8 +78,15 @@ export const getFormattedData = async (bulkData, resource) => {
     }
   );
 
-  const staffMap = await StaffModel.find({}).then((staffs) => {
-    return staffs.reduce((acc, item) => {
+  // const userMap = await StaffModel.find({}).then((staffs) => {
+  //   return staffs.reduce((acc, item) => {
+  //     acc[item.firstName + " " + item.lastName] = item._id;
+  //     return acc;
+  //   }, {});
+  // });
+
+  const userMap = await UserModel.find({}).then((users) => {
+    return users.reduce((acc, item) => {
       acc[item.firstName + " " + item.lastName] = item._id;
       return acc;
     }, {});
@@ -160,7 +168,7 @@ export const getFormattedData = async (bulkData, resource) => {
             formattedRow[modelField] = classificationMap[row[csvField]];
             break;
           case "enteredBy":
-            formattedRow[modelField] = staffMap[row[csvField]];
+            formattedRow[modelField] = userMap[row[csvField]];
             console.log("enteredBy csv field ----", row[csvField]);
             break;
           case "incorporationType":
@@ -188,10 +196,10 @@ export const getFormattedData = async (bulkData, resource) => {
             formattedRow[modelField] = territoryMap[row[csvField]];
             break;
           case "primaryRelationship":
-            formattedRow[modelField] = staffMap[row[csvField]];
+            formattedRow[modelField] = userMap[row[csvField]];
             break;
           case "secondaryRelationship":
-            formattedRow[modelField] = staffMap[row[csvField]];
+            formattedRow[modelField] = userMap[row[csvField]];
             break;
           case "archeType":
             formattedRow[modelField] = archTypeMap[row[csvField]];
@@ -221,13 +229,13 @@ export const getFormattedData = async (bulkData, resource) => {
             formattedRow[modelField] = salesSubStageMap[row[csvField]]; // Implement getSolutionIdByName function
             break;
           case "salesChamp":
-            formattedRow[modelField] = staffMap[row[csvField]]; // Implement getSolutionIdByName function
+            formattedRow[modelField] = userMap[row[csvField]]; // Implement getSolutionIdByName function
             break;
           case "officer":
-            formattedRow[modelField] = staffMap[row[csvField]]; // Implement getSolutionIdByName function
+            formattedRow[modelField] = userMap[row[csvField]]; // Implement getSolutionIdByName function
             break;
           case "bidManager":
-            formattedRow[modelField] = staffMap[row[csvField]]; // Implement getSolutionIdByName function
+            formattedRow[modelField] = userMap[row[csvField]]; // Implement getSolutionIdByName function
             break;
           case "stage":
             formattedRow[modelField] = tenderStageMap[row[csvField]]; // Implement getSolutionIdByName function

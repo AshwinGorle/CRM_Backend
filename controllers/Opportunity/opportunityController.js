@@ -12,7 +12,7 @@ class OpportunityController {
   static createOpportunity = catchAsyncError(async (req, res, next, session) => {
     let {
       entryDate,
-      enteredBy,
+      enteredBy = req.user._id,
       client,
       partneredWith,
       projectName,
@@ -30,7 +30,7 @@ class OpportunityController {
     } = req.body;
     // Validate required fields
     console.log("revenue from frontend :  ", revenue)
-    if (!entryDate || !enteredBy || !projectName || !stageClarification) {
+    if ( !projectName || !stageClarification) {
       return res.status(400).json({
         status: "failed",
         message: "All required fields must be filled",

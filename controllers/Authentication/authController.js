@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import sendEmail from "../../utils/sendEmail.js";
 import crypto from "crypto";
 import { type } from "os";
+import uploadAndGetAvatarUrl from "../../utils/uploadAndGetAvatarUrl.utils.js";
 
 class AuthController {
   static homeFunction = (req, res) => {
@@ -30,6 +31,7 @@ class AuthController {
   };
 
   static signup = async (req, res, sendPassword = false) => {
+    console.log("request body ", req.body);
     const {
       firstName,
       lastName,
@@ -73,8 +75,8 @@ class AuthController {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
       const otp = crypto.randomInt(100000, 999999); // Generate OTP
-
-      const newUser = await UserModel.create({
+      
+      const newUser = new UserModel({
         firstName,
         lastName,
         phone,
@@ -86,7 +88,16 @@ class AuthController {
         otp,
         otpExpiresAt: Date.now() + 10 * 60 * 1000, // OTP valid for 10 minutes
       });
-
+      if (req.file) {
+        console.log("file ", req.file);
+        newUser.avatar = await uploadAndGetAvatarUrl(
+          req.file,
+          "user",
+          newUser._id,
+          "stream"
+        );
+      }
+      await newUser.save();
       // Send OTP to user email
       if (sendPassword) {
         await sendEmail({

@@ -12,7 +12,7 @@ const BusinessDevelopmentSchema = new mongoose.Schema({
     enteredBy: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: "Staff"
+        ref: "User"
     },
     contact: {
         type: mongoose.Schema.Types.ObjectId,
@@ -42,7 +42,7 @@ const BusinessDevelopmentSchema = new mongoose.Schema({
     },
     salesChamp: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Staff"
+        ref: "User"
     },
     potentialTopLine: {
         type: Number

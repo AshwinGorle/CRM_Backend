@@ -9,7 +9,7 @@ class RegistrationMasterController {
     const {
       client,
       entryDate,
-      enteredBy,
+      enteredBy = req.user._id,
       registrationChamp,
       status,
       websiteDetails,
@@ -24,8 +24,6 @@ class RegistrationMasterController {
     // Validate required fields
     if (
       !client ||
-      !entryDate ||
-      !enteredBy ||
       !registrationChamp ||
       !status ||
       !websiteDetails?.username ||

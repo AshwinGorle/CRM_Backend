@@ -10,7 +10,7 @@ class ContactMasterController {
     let {
       gender,
       entryDate,
-      enteredBy,
+      enteredBy = req.user._id,
       firstName,
       lastName,
       client,
@@ -30,8 +30,6 @@ class ContactMasterController {
     // Validate required fields
     if (
       !gender ||
-      !entryDate ||
-      !enteredBy ||
       !firstName ||
       !lastName ||
       !jobTitle ||
@@ -75,7 +73,7 @@ class ContactMasterController {
       notes,
     });
     if(req.file){
-      newContact.avatar = await uploadAndGetAvatarUrl(req.file,"contact",contact._id, "stream");
+      newContact.avatar = await uploadAndGetAvatarUrl(req.file,"contact",newContact._id, "stream");
     }
     // Save the instance
     await newContact.save();

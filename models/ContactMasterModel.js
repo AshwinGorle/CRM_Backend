@@ -17,7 +17,7 @@ const ContactMasterSchema = new mongoose.Schema({
   enteredBy: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: "Staff",
+    ref: "User",
   },
   firstName: {
     type: String,

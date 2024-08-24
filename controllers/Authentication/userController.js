@@ -5,6 +5,7 @@ import UserModel from "../../models/UserModel.js";
 import AuthController from "./authController.js";
 class UserController {
   static getAllUser = catchAsyncError(async (req, res, next) => {
+    console.log("getAll user called ")
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 12;
     const skip = (page - 1) * limit;
@@ -47,9 +48,9 @@ static generateAlphabetPassword = (length = 4) =>
   });
 
   static createUser = catchAsyncError(async (req, res, next) => {
-    const password = `AXRC${generateAlphabetPassword()}`;
-    req.password = process.env. password;
-    req.password_confirmation = password;
+    const password = `AXRC${this.generateAlphabetPassword()}`;
+    req.body.password = password;
+    req.body.password_confirmation = password;
     AuthController.signup(req, res, true); // true for not sending otp
   });
 

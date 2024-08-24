@@ -20,7 +20,7 @@ export const ClientMasterSchema = new mongoose.Schema({
     enteredBy : {
         type : mongoose.Schema.Types.ObjectId,
         required : true,
-        ref : "Staff"
+        ref : "User"
     },
     industry : {
         type : mongoose.Schema.Types.ObjectId,
@@ -71,11 +71,11 @@ export const ClientMasterSchema = new mongoose.Schema({
     },
     primaryRelationship : {
         type : mongoose.Schema.Types.ObjectId,
-        ref : "Staff"
+        ref : "User"
     },
     secondaryRelationship : {
         type : mongoose.Schema.Types.ObjectId,
-        ref : "Staff"
+        ref : "User"
     },
     relatedContacts : [
         {

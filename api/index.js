@@ -16,10 +16,11 @@ import homePage from '../home.js';
 import uploadRouter from '../routes/upload/uloadTestRoute.js';
 import authRouter from '../routes/Authentication/AuthRoute.js';
 import userRouter from '../routes/Authentication/userRoute.js';
+import authenticateToken from '../middlewares/authenticateToken.js';
 const app = express();
 dotenv.config();
 const corsOptions = {
-    origin : "*",
+    origin: "http://localhost:3000",
     credentials : true
 }
 
@@ -27,14 +28,14 @@ app.use(cors(corsOptions));
 app.use(express.urlencoded({extended : false}));
 app.use(express.json());
 app.use(cookieParser());
-
 const PORT = process.env.PORT || 5000;
 const DB_URL = process.env.DATABASE_URL; 
 connectDb(DB_URL);
 
-app.get('/',homePage);
-app.use('/user',userRouter)
 app.use('/auth', authRouter);
+app.get('/',homePage);
+// app.use(authenticateToken);
+app.use('/user',userRouter)
 app.use('/client', clientMasterRouter);
 app.use('/team', teamRouter );
 app.use('/contact', contactMasterRouter);

@@ -15,7 +15,7 @@ class TenderMasterController {
     const {
       rfpDate,
       entryDate,
-      enteredBy,
+      enteredBy = req.user._id,
       submissionDueDate,
       client,
       reference,
