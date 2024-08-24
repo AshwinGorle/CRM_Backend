@@ -82,7 +82,7 @@ class AuthController {
     const { email, otp } = req.body;
     try {
       const user = await UserModel.findOne({ email });
-      if (!user || user.otp !== otp || user.otpExpiresAt < Date.now()) {
+      if (!user || user.otp != otp || user.otpExpiresAt < Date.now()) {
         return res.status(400).json({ status: "failed", message: "Invalid or expired OTP" });
       }
 
@@ -219,7 +219,7 @@ class AuthController {
 
     try {
       const user = await UserModel.findOne({ email });
-      if (!user || user.otp !== otp || user.otpExpiresAt < Date.now()) {
+      if (!user || user.otp != otp || user.otpExpiresAt < Date.now()) {
         return res.status(400).json({ status: "failed", message: "Invalid or expired OTP" });
       }
 
