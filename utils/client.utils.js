@@ -18,12 +18,16 @@ export const getClientId = ()=>{
     return Array.from({ length: 6 }, () => String.fromCharCode(65 + Math.floor(Math.random() * 26))).join('');
 } 
 
-export const getLifetimeValue = async (clientId)=>{
+export const checkForLifetimeValueAndUpdate = async (clientId, session)=>{
     console.log("entered")
-    const opportunities = await OpportunityMasterModel.find({client : clientId}).populate("revenue salesSubStage" );
+    const client = await ClientMasterModel.findById(clientId);
+    if(!client)throw new ServerError("NotFound","client (while calculating lifeTimeValue)");
+    const opportunities = await OpportunityMasterModel.find({client : clientId}).populate("revenue salesSubStage" ).session(session);
+    console.log("lookup opp : ", opportunities)
     console.log("opportunities ", opportunities);
-    if(opportunities.length == 0 ) return "Oppor.. not Available!"
-    const lifeTimeValue = opportunities.reduce((acc, opportunity)=>{
+    let lifeTimeValue = 0;
+    if(opportunities.length == 0 ) lifeTimeValue = 0;
+    lifeTimeValue = opportunities.reduce((acc, opportunity)=>{
          console.log("Includes : ", opportunity?.salesSubStage?.label )
          if(opportunity?.salesSubStage?.label == "Won - 6"){
              return acc + opportunity?.revenue?.reduce(
@@ -35,7 +39,9 @@ export const getLifetimeValue = async (clientId)=>{
          }
          return acc + 0;
      }, 0);
-     return lifeTimeValue;
+     console.log("calculated lifetime value", lifeTimeValue)
+     client.lifeTimeValue = lifeTimeValue;
+     await client.save({session});
  }
 
 export const parseContacts = async (relatedContacts, client)=>{

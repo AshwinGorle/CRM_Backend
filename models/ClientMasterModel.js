@@ -100,11 +100,15 @@ export const ClientMasterSchema = new mongoose.Schema({
             type : mongoose.Schema.Types.ObjectId,
             ref : 'ContactMaster'
         }
-    ]
+    ],
     // detailsConfirmation : {
     //     type : Boolean,
     //     default : false
     // },
+    lifeTimeValue : {
+        type : Number,
+        default : 0
+    }
     
 },{timestamps : true});
 

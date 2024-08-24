@@ -7,6 +7,7 @@ import { updateTotalRevenueAndSales, validateOpportunityId } from "../../utils/o
 import RevenueMasterController from "./revenueController.js";
 import RevenueController from "./revenueController.js";
 import { opportunityFieldMap } from "../upload/fieldMap.js";
+import { checkForLifetimeValueAndUpdate } from "../../utils/client.utils.js";
 class OpportunityController {
   static createOpportunity = catchAsyncError(async (req, res, next, session) => {
     let {
@@ -72,6 +73,7 @@ class OpportunityController {
     updateTotalRevenueAndSales(newOpportunity);
     console.log("opportunity after expected sales calculation ", newOpportunity)
     await newOpportunity.save({session});
+    if(newOpportunity.client)await checkForLifetimeValueAndUpdate(newOpportunity.client, session);
     return res.status(201).json({
       status: "success",
       message: "Opportunity created successfully",
@@ -178,12 +180,16 @@ class OpportunityController {
        await RevenueController.handleRevenue(updateData.revenue, opportunity, session);
     }
     
+    
     await opportunity.save({session});
     console.log("opportunity after save", opportunity)
     let updatedOpportunity =  await OpportunityMasterModel.findById(opportunity._id).populate('revenue').session(session)
     updateTotalRevenueAndSales(updatedOpportunity);
     console.log("opportunity after revenue", updatedOpportunity)
+    console.log("before lifetime value ")
+    console.log("after lifetime value ")
     await updatedOpportunity.save({session})
+    if(updatedOpportunity.client)await checkForLifetimeValueAndUpdate(updatedOpportunity.client, session);
 
     console.log("opp after total revenue save", updatedOpportunity)
 
@@ -195,17 +201,17 @@ class OpportunityController {
     });
   }, true);
 
-  static deleteOpportunity = catchAsyncError(async (req, res, next) => {
+  static deleteOpportunity = catchAsyncError(async (req, res, next, session) => {
     const { id } = req.params;
 
-    const opportunity = await OpportunityMasterModel.findByIdAndDelete(id);
-
+    const opportunity = await OpportunityMasterModel.findByIdAndDelete(id).session(session);
+    if(opportunity.client)await checkForLifetimeValueAndUpdate(opportunity.client, session);
     res.status(200).json({
       status: "success",
       message: "Opportunity deleted successfully",
       data: opportunity,
     });
-  });
+  },true);
 }
 
 export default OpportunityController;

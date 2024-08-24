@@ -2,12 +2,12 @@ import mongoose from "mongoose";
 import { clientError } from "../../config/responseMessage.js";
 import { catchAsyncError } from "../../middlewares/catchAsyncError.middleware.js";
 import ClientMasterModel from  "../../models/ClientMasterModel.js"
-import { getClient, parseContacts } from "../../utils/client.utils.js";
+import { checkForLifetimeValueAndUpdate, getClient, parseContacts } from "../../utils/client.utils.js";
 import { ServerError } from "../../utils/customErrorHandler.utils.js";
 import OpportunityMasterModel from "../../models/OpportunityMasterModel.js" 
 import ContactMasterModel from "../../models/ContactMasterModel.js";
 import uploadAndGetAvatarUrl from "../../utils/uploadAndGetAvatarUrl.utils.js";
-import { getClientId , getLifetimeValue} from "../../utils/client.utils.js";
+import { getClientId } from "../../utils/client.utils.js";
 import { parse } from "dotenv";
 import { CURSOR_FLAGS } from "mongodb";
 class ClientMasterController {
@@ -128,10 +128,6 @@ class ClientMasterController {
         .populate("relationshipStatus")
         .populate("relatedContacts")
         .session(session);
-    
-    for(const client of clientMasters ){
-        client.lifeTimeValue = await getLifetimeValue(client._id);
-    }
 
     res.status(200).json({
         status: 'success',
@@ -155,10 +151,6 @@ static getClientById = catchAsyncError(async (req, res, next) => {
         .populate("relationshipStatus")
         // .populate("relatedContacts");
 
-
-    if (!client) throw new ServerError("NotFound", "Client");
-    client.lifeTimeValue = await getLifetimeValue(client._id);
-    console.log("lifeTimeValue : ", client.lifeTimeValue);
     res.status(200).json({
         status: 'success',
         message: 'Client retrieved successfully',
