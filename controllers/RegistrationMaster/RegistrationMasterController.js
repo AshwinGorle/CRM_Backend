@@ -80,7 +80,7 @@ class RegistrationMasterController {
       .populate("enteredBy")
       .populate("registrationChamp")
       .populate("primaryContact")
-      .populate("registrationStatus")
+      .populate("status")
 
     res.status(200).json({
       status: "success",
