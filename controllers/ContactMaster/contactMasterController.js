@@ -21,10 +21,12 @@ class ContactMasterController {
       personalEmail,
       archeType,
       relationshipDegree,
-      city,
       memorableDetail,
       detailsConfirmation,
       notes,
+      city,
+      state,
+      country,
     } = req.body;
 
     // Validate required fields
@@ -33,8 +35,7 @@ class ContactMasterController {
       !firstName ||
       !lastName ||
       !jobTitle ||
-      !mobilePhone ||
-      !city
+      !mobilePhone
     ) {
       return res
         .status(400)
@@ -53,6 +54,11 @@ class ContactMasterController {
     }
 
     // Create a new instance of the ContactMasterModel
+    const address = {
+      city : city || 'NA',
+      state : state || 'NA',
+      country : country || 'NA'
+    }
     const newContact = new ContactMasterModel({
       gender,
       entryDate,
@@ -67,7 +73,7 @@ class ContactMasterController {
       personalEmail,
       archeType,
       relationshipDegree,
-      city,
+      address,
       memorableDetail,
       detailsConfirmation,
       notes,
@@ -129,17 +135,21 @@ class ContactMasterController {
   });
 
   static updateContact = catchAsyncError(async (req, res, next) => {
-    console.log("update intered")
+    console.log("update interred")
     const { id } = req.params;
     const updateData = req.body;
     const contact = await ContactMasterModel.findById(id);
     console.log("update data ", updateData)
     if (!contact) throw new ServerError("NotFound", "Contact");
-
+    
     Object.keys(updateData).forEach((key) => {
-      contact[key] = updateData[key];
+      if(key=='city' || key == 'state' || key =='country'){
+        contact['address'][key] = updateData[key];
+      }else{
+        contact[key] = updateData[key];
+      }
     });
-
+    
     if(req.file){
       contact.avatar = await uploadAndGetAvatarUrl(req.file,"contact",contact._id, "stream");
     }

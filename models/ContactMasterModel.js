@@ -1,5 +1,16 @@
 import mongoose from "mongoose";
 
+const AddressSchema = new mongoose.Schema({
+   city : {
+    type : String,
+   },
+   state : {
+    type : String,
+   },
+   country : {
+    type : String
+   }
+})
 const ContactMasterSchema = new mongoose.Schema({
   avatar : {
    type : String,
@@ -65,9 +76,8 @@ const ContactMasterSchema = new mongoose.Schema({
     type : mongoose.Schema.Types.ObjectId,
     ref : "RelationshipDegree"
   },
-  city: {
-    type: String,
-    require: true,
+  address : {
+    type: AddressSchema
   },
   memorableDetail: {
     type: String,

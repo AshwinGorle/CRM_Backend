@@ -20,7 +20,7 @@ import authenticateToken from '../middlewares/authenticateToken.js';
 const app = express();
 dotenv.config();
 const corsOptions = {
-    origin: "https://crm-frontend-sigma-green.vercel.app/",
+    origin: "https://crm-frontend-sigma-green.vercel.app",
     credentials : true
 }
 
@@ -34,7 +34,7 @@ connectDb(DB_URL);
 
 app.use('/auth', authRouter);
 app.get('/',homePage);
-// app.use(authenticateToken);
+app.use(authenticateToken);
 app.use('/user',userRouter)
 app.use('/client', clientMasterRouter);
 app.use('/team', teamRouter );
