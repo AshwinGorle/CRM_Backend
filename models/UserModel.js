@@ -1,6 +1,16 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
-
+const AddressSchema = new mongoose.Schema({
+  city : {
+   type : String,
+  },
+  state : {
+   type : String,
+  },
+  country : {
+   type : String
+  }
+})
 const UserSchema = new mongoose.Schema(
   {
     avatar : {
@@ -52,8 +62,7 @@ const UserSchema = new mongoose.Schema(
       default: false,
     },
     address : {
-      type : String,
-      require : true
+     type : AddressSchema
     },
     otp: {
       type: Number,

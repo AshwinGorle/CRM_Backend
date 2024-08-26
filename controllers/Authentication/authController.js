@@ -41,7 +41,9 @@ class AuthController {
       password_confirmation,
       gender,
       role = "viewer",
-      address,
+      city = "N/A",
+      state = "N/A",
+      country = "N/A",
     } = req.body;
 
     if (password !== password_confirmation) {
@@ -76,6 +78,12 @@ class AuthController {
       const hashedPassword = await bcrypt.hash(password, salt);
       const otp = crypto.randomInt(100000, 999999); // Generate OTP
       
+      const address = {
+        city,
+        state,
+        country
+      }
+
       const newUser = new UserModel({
         firstName,
         lastName,

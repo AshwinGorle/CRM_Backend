@@ -62,7 +62,11 @@ static generateAlphabetPassword = (length = 4) =>
     if (!user) throw new ServerError("NotFound", "user");
     Object.keys(updateData).forEach((key) => {
       if(key != "_id" && key != "password" && key != "otp" && key != "isVerified" )
-      user[key] = updateData[key];
+      if(key == 'city' || key == 'country' || key == 'state' ){
+        user['address'][key] = updateData[key];
+      }else{
+        user[key] = updateData[key];
+      }
     });
     if (req.file) {
       user.avatar = await uploadAndGetAvatarUrl(
