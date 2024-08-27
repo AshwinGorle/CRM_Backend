@@ -19,9 +19,9 @@ import userRouter from '../routes/Authentication/userRoute.js';
 import authenticateToken from '../middlewares/authenticateToken.js';
 const app = express();
 const corsOptions = {
-    origin: "https://crm-frontend-sigma-green.vercel.app",
+    origin: ["https://crm-frontend-sigma-green.vercel.app","http://localhost:3000"],
     methods : ["POST", "GET", "PUT", "DELETE"],
-    credentials : true
+    credentials : true,
 }
 
 app.use(cors(corsOptions));
