@@ -38,7 +38,7 @@ app.use('/auth', authRouter);
 app.get('/',homePage);
 // app.use(authenticateToken);
 app.use('/user',userRouter)
-app.use('/client', clientMasterRouter);
+app.use('/client', authenticateToken ,clientMasterRouter);
 app.use('/team', teamRouter );
 app.use('/contact', contactMasterRouter);
 app.use('/bd', businessDevelopmentRouter);
