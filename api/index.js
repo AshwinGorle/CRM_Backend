@@ -18,13 +18,13 @@ import authRouter from '../routes/Authentication/AuthRoute.js';
 import userRouter from '../routes/Authentication/userRoute.js';
 import authenticateToken from '../middlewares/authenticateToken.js';
 const app = express();
-dotenv.config();
 const corsOptions = {
-    origin: ["http://localhost:3000", "https://crm-frontend-sigma-green.vercel.app/"],
+    origin: "https://crm-frontend-sigma-green.vercel.app",
     credentials : true
 }
-
 app.use(cors(corsOptions));
+dotenv.config();
+
 app.use(express.urlencoded({extended : false}));
 app.use(express.json());
 app.use(cookieParser());
