@@ -35,7 +35,7 @@ class BusinessDevelopmentController {
     if (isNaN(validEntryDate.getTime())) {
       return res
         .status(400)
-        .json({ status: "failed", message: "Invalid entryDate" });
+        .json({ status: "failed", message: "Invalid entryDate provided" });
     }
 
     const newBusinessDevelopment = new BusinessDevelopmentModel({
