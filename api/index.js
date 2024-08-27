@@ -22,6 +22,7 @@ const corsOptions = {
     origin: "https://crm-frontend-sigma-green.vercel.app",
     credentials : true
 }
+app.options('*', cors(corsOptions));
 app.use(cors(corsOptions));
 dotenv.config();
 
