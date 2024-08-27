@@ -44,8 +44,8 @@ app.use('/bd', businessDevelopmentRouter);
 app.use('/tender',tenderMasterRouter);
 app.use('/opportunity', opportunityRouter);
 app.use('/registration', registrationMasterRouter);
-app.use('/configuration', configurationRoute);
-app.use('/upload', uploadRouter);
+// app.use('/configuration', configurationRoute);
+// app.use('/upload', uploadRouter);
 app.use(error);
 
 app.listen(1234, ()=>{
