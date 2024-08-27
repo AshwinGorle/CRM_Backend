@@ -4,6 +4,8 @@
      "routes": [
     {
       "src": "/(.*)",
+      "dest" : "api/index.js",
+      "methods" : ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
       "headers": {
         "Access-Control-Allow-Origin": "https://crm-frontend-sigma-green.vercel.app",
         "Access-Control-Allow-Credentials": "true",
