@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import RegistrationMasterModel from "../../models/RegistrationMasterModel.js";
 import { catchAsyncError } from "../../middlewares/catchAsyncError.middleware.js";
 import { ServerError } from "../../utils/customErrorHandler.utils.js";
+import { getFilterOptions, getSortingOptions } from "../../utils/searchOptions.js";
 
 class RegistrationMasterController {
   // Create a new RegistrationMaster entry

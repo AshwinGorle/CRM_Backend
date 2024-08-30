@@ -22,7 +22,8 @@ export const getFilterOptions = (query)=>{
 
 export const getSortingOptions = (query)=>{
   const {name, entry_date} = query
-  let sortingOptions = {}
+  console.log("getSortingOptions : ", name, entry_date )
+  let sortingOptions = {entryDate : -1}
   if(name){
     if(name == '1')
       sortingOptions.name = 1;
