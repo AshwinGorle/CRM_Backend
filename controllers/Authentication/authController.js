@@ -161,6 +161,7 @@ class AuthController {
 
       res.cookie("token", token, {
         httpOnly: true,
+        sameSite : 'None',
         secure: process.env.NODE_ENV === "production",
         maxAge: 10 * 24 * 60 * 60 * 1000, // 10 days
       });
@@ -241,7 +242,7 @@ class AuthController {
   };
 
   static logout = (req, res) => {
-    res.cookie("token", "", { maxAge: 1 });
+    res.cookie("token", "", { maxAge: 1 , sameSite : "None"});
     res.status(200).json({ status: "success", message: "Logout successful" });
   };
 

@@ -8,8 +8,8 @@ import OpportunityMasterModel from "../../models/OpportunityMasterModel.js"
 import ContactMasterModel from "../../models/ContactMasterModel.js";
 import uploadAndGetAvatarUrl from "../../utils/uploadAndGetAvatarUrl.utils.js";
 import { getClientId } from "../../utils/client.utils.js";
-import { parse } from "dotenv";
-import { CURSOR_FLAGS } from "mongodb";
+import { getFilterOptions, getSortingOptions } from "../../utils/searchOptions.js";
+
 class ClientMasterController {
 
     static createClient = catchAsyncError(async (req, res, next, session) => {
@@ -101,22 +101,24 @@ class ClientMasterController {
         res.status(201).json({ status: 'success', message: "Client created successfully", data: newClient });
     });
     
-    
-
  
   static getAllClient = catchAsyncError(async (req, res, next, session) => {
+    console.log("get all clients req")
     const limit = parseInt(req.query.limit) || 12;
     const page = parseInt(req.query.page) || 1;
     const skip = (page-1)*limit;
     const {config} = req.query;
-    
+    const filterOptions = getFilterOptions(req.query);
+    const sortingOptions = getSortingOptions(req.query);
+    console.log("filter" , filterOptions)
+    console.log("sorting" , sortingOptions) 
     if(config === 'true'){
         const clients = await ClientMasterModel.find().select("name")
         return res.send({config : true , clients});
     }
     
-    const totalCount = await ClientMasterModel.countDocuments();
-    const clientMasters = await ClientMasterModel.find().skip(skip).limit(limit)
+    const totalCount = await ClientMasterModel.countDocuments(filterOptions);
+    const clientMasters = await ClientMasterModel.find(filterOptions).sort(sortingOptions).skip(skip).limit(limit)
         .populate("enteredBy")
         .populate("industry")
         .populate("subIndustry")

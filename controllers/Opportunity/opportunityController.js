@@ -8,6 +8,7 @@ import RevenueMasterController from "./revenueController.js";
 import RevenueController from "./revenueController.js";
 import { opportunityFieldMap } from "../upload/fieldMap.js";
 import { checkForLifetimeValueAndUpdate } from "../../utils/client.utils.js";
+import { getFilterOptions, getSortingOptions } from "../../utils/searchOptions.js";
 class OpportunityController {
   static createOpportunity = catchAsyncError(async (req, res, next, session) => {
     let {
@@ -85,6 +86,8 @@ class OpportunityController {
     const limit = parseInt(req.query.limit) || 12;
     const page = parseInt(req.query.page) || 1;
     const skip = (page - 1) * limit;
+    const filterOptions = getFilterOptions(req.query);
+    const sortingOptions = getSortingOptions(req.query);
     const { config } = req.query;
     if (config === "true") {
       const opportunities = await OpportunityMasterModel.find().select(
@@ -97,8 +100,8 @@ class OpportunityController {
       });
     }
 
-    const totalCount = await OpportunityMasterModel.countDocuments();
-    const opportunities = await OpportunityMasterModel.find()
+    const totalCount = await OpportunityMasterModel.countDocuments(filterOptions);
+    const opportunities = await OpportunityMasterModel.find(filterOptions).sort(sortingOptions)
       .limit(limit)
       .skip(skip)
       .populate("enteredBy")

@@ -7,6 +7,7 @@ import {
 import ClientMasterModel from "../../models/ClientMasterModel.js";
 import mongoose from "mongoose";
 import { checkForSubmissionDate, checkForTenderId } from "../../utils/tender.utils.js";
+import { getFilterOptions, getSortingOptions } from "../../utils/searchOptions.js";
 class TenderMasterController {
   // Create a new TenderMaster entry
  
@@ -79,12 +80,14 @@ class TenderMasterController {
   static getAllTenderMasters = catchAsyncError(async (req, res, next) => {
     const { page = 1, limit = 12, config = false} = req.query;
     const  skip = (page - 1) * limit 
-    const  totalCount = await TenderMasterModel.countDocuments();
+    const filterOptions = getFilterOptions(req.query);
+    const sortingOptions = getSortingOptions(req.query);
+    const  totalCount = await TenderMasterModel.countDocuments(filterOptions);
     if(config === "true"){
       const tenders = await TenderMasterModel.find().select("customId");
       return res.send({status : "success", message : "Config Tender fetched successfully", data : { config : true ,  tenders }});
     }
-    const tenderMasters = await TenderMasterModel.find()
+    const tenderMasters = await TenderMasterModel.find(filterOptions).sort(sortingOptions)
       .limit(limit)
       .skip(skip)
       .populate("enteredBy")

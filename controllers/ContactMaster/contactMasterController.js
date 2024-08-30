@@ -4,6 +4,7 @@ import { catchAsyncError } from "../../middlewares/catchAsyncError.middleware.js
 import ContactMasterModel from "../../models/ContactMasterModel.js";
 import { ServerError } from "../../utils/customErrorHandler.utils.js";
 import uploadAndGetAvatarUrl from "../../utils/uploadAndGetAvatarUrl.utils.js";
+import { getFilterOptions, getSortingOptions } from "../../utils/searchOptions.js";
 
 class ContactMasterController {
   static createContact = catchAsyncError(async (req, res, next) => {
@@ -96,13 +97,15 @@ class ContactMasterController {
     const limit = parseInt(req.query.limit) || 12;
     const page = parseInt(req.query.page) || 1;
     const skip = (page - 1) * limit;
+    const filterOptions = getFilterOptions(req.query);
+    const sortingOptions = getSortingOptions(req.query);
     const {config} = req.query;
     if(config === 'true'){
       const contacts = await ContactMasterModel.find().select("firstName lastName");
       return res.send({status : "success", message : "Config contacts fetched successfully", data : { config : true ,  contacts }});
     }
-    const totalCount = await ContactMasterModel.countDocuments()
-    const contacts = await ContactMasterModel.find()
+    const totalCount = await ContactMasterModel.countDocuments(filterOptions)
+    const contacts = await ContactMasterModel.find(filterOptions).sort(sortingOptions)
       .limit(limit)
       .skip(skip)
       .populate("enteredBy")

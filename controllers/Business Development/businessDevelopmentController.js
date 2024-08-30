@@ -3,6 +3,7 @@ import { catchAsyncError } from "../../middlewares/catchAsyncError.middleware.js
 import BusinessDevelopmentModel from "../../models/BusinessDevelopmentModel.js";
 import { ServerError } from "../../utils/customErrorHandler.utils.js";
 import { checkForPotentialRevenue } from "../../utils/BD.utils.js";
+import { getFilterOptions, getSortingOptions } from "../../utils/searchOptions.js";
 
 class BusinessDevelopmentController {
   static createBusinessDevelopment = catchAsyncError(async (req, res, next) => {
@@ -73,9 +74,11 @@ class BusinessDevelopmentController {
       const limit = parseInt(req.query.limit) || 12;
       const page = parseInt(req.query.page) || 1;
       const skip = (page - 1) * limit;
-      const totalCount = await BusinessDevelopmentModel.countDocuments();
+      const filterOptions = getFilterOptions(req.query);
+    const sortingOptions = getSortingOptions(req.query);
+      const totalCount = await BusinessDevelopmentModel.countDocuments(filterOptions);
       
-      const businessDevelopments = await BusinessDevelopmentModel.find().skip(skip).limit(limit)
+      const businessDevelopments = await BusinessDevelopmentModel.find(filterOptions).sort(sortingOptions).skip(skip).limit(limit)
         .populate("client")
         .populate("enteredBy")
         .populate("contact")

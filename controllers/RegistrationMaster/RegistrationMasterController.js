@@ -70,8 +70,10 @@ class RegistrationMasterController {
     const limit = parseInt(req.query.limit) || 12;
     const page = parseInt(req.query.page) || 1;
     const skip = (page - 1) * limit;
-    const totalCount = await RegistrationMasterModel.countDocuments();
-    const registrationMasters = await RegistrationMasterModel.find()
+    const filterOptions = getFilterOptions(req.query);
+    const sortingOptions = getSortingOptions(req.query);
+    const totalCount = await RegistrationMasterModel.countDocuments(filterOptions);
+    const registrationMasters = await RegistrationMasterModel.find(filterOptions).sort(sortingOptions)
       .skip(skip)
       .limit(limit)
       .populate("client")
