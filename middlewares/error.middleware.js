@@ -10,7 +10,7 @@ export const error = (err, req, res, next)=>{
     //     }
     // }
     // if(err.type == "ClientError"){
-    //     if(err.name == "AllRequired"){
+    //     if(err.name == "AllRequired"){A
     //         err. message = `All fields required!`
     //     }
     // }
