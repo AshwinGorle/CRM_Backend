@@ -11,7 +11,7 @@ class ContactMasterController {
     let {
       gender,
       entryDate,
-      enteredBy = req.user._id,
+      enteredBy = req?.user?._id,
       firstName,
       lastName,
       client,
@@ -60,7 +60,7 @@ class ContactMasterController {
       state : state || 'NA',
       country : country || 'NA'
     }
-    const newContact = new ContactMasterModel({
+    const newContact = await new ContactMasterModel({
       gender,
       entryDate,
       enteredBy,
