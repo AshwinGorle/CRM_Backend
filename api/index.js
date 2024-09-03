@@ -36,7 +36,7 @@ connectDb(DB_URL);
 
 app.use('/auth', authRouter);
 app.get('/',homePage);
-// app.use(authenticateToken);
+app.use(authenticateToken);
 app.use('/user',userRouter)
 app.use('/client' ,clientMasterRouter);
 app.use('/team', teamRouter );
