@@ -114,7 +114,7 @@ class RegistrationMasterController {
   static updateRegistrationMaster = catchAsyncError(async (req, res, next) => {
     const { id } = req.params;
     const updateData = req.body;
-
+    console.log("update registration data---",updateData)
     const registrationMaster = await RegistrationMasterModel.findById(id);
     if (!registrationMaster)
       throw new ServerError("NotFound", "RegistrationMaster");

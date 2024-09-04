@@ -86,9 +86,15 @@ const ContactMasterSchema = new mongoose.Schema({
   //   type : Boolean,
   //   default : false
   // },
-  notes : [
-    {type : String}
-  ]
+  // notes : [
+  //    {
+  //     type : mongoose.Schema.Types.ObjectId,
+  //     ref : "Note"
+  //    }
+  // ]
+  notes: [{
+    type: String
+}]
 
 });
 

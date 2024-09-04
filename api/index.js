@@ -20,6 +20,7 @@ import authenticateToken from '../middlewares/authenticateToken.js';
 const app = express();
 const corsOptions = {
     origin: ["https://crm-frontend-sigma-green.vercel.app","http://localhost:3000"],
+    // origin: "*",
     methods : ["POST", "GET", "PUT", "DELETE"],
     credentials : true,
 }

@@ -126,7 +126,8 @@ class ContactMasterController {
       .populate("enteredBy")
       // .populate("client")
       .populate("archeType")
-      .populate("relationshipDegree");
+      .populate("relationshipDegree")
+     
 
     if (!contact) throw new ServerError("NotFound", "Contact");
 
@@ -142,7 +143,7 @@ class ContactMasterController {
     const { id } = req.params;
     const updateData = req.body;
     const contact = await ContactMasterModel.findById(id);
-    console.log("update data ", updateData)
+    console.log("update data for contact ", updateData)
     if (!contact) throw new ServerError("NotFound", "Contact");
     
     Object.keys(updateData).forEach((key) => {
