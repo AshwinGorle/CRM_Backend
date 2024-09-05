@@ -35,8 +35,8 @@ const PORT = process.env.PORT || 5000;
 const DB_URL = process.env.DATABASE_URL; 
 connectDb(DB_URL);
 
-app.use('/auth', authRouter);
 app.get('/',homePage);
+app.use('/auth', authRouter);
 app.use(authenticateToken);
 app.use('/user',userRouter)
 app.use('/client' ,clientMasterRouter);
