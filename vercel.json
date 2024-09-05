@@ -1,5 +1,5 @@
 {   
-    "rewrites" : [{"source" : "/(.*)", "destination" :  "/"}],
+    
     "version": 2, 
     "builds": [
       {
@@ -19,6 +19,12 @@
           "Access-Control-Allow-Headers": "Content-Type, Authorization"
         }
       }
-    ]
+    ],
+    "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/api/index.js"
+    }
+  ]
   }
   
