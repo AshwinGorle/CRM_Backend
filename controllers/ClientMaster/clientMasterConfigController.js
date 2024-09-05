@@ -157,9 +157,7 @@ class ClientMasterConfigController {
 
 static getAllRelationshipStatus = catchAsyncError(async (req, res, next) => {
     const relationshipStatuses = await RelationshipStatusModel.find();
-    for(let i=0; i<10; i++){
-      console.log('loop')
-    }
+   
     res.status(200).json({
         status: "success",
         message: "All relationship statuses retrieved successfully",
