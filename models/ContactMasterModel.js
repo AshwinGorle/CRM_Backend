@@ -76,9 +76,17 @@ const ContactMasterSchema = new mongoose.Schema({
     type : mongoose.Schema.Types.ObjectId,
     ref : "RelationshipDegree"
   },
-  address : {
-    type: AddressSchema
+  // address : {
+  //   type: AddressSchema
+  // },
+  territory :{
+    type : mongoose.Schema.Types.ObjectId,
+    required : true,
+    ref : "TerritoryMaster"
   },
+  country : {
+    type : String
+   },
   memorableDetail: {
     type: String,
   },

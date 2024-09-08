@@ -28,6 +28,7 @@ class ContactMasterController {
       city,
       state,
       country,
+      territory
     } = req.body;
 
     // Validate required fields
@@ -78,6 +79,7 @@ class ContactMasterController {
       memorableDetail,
       detailsConfirmation,
       notes,
+      territory
     });
     if(req.file){
       newContact.avatar = await uploadAndGetAvatarUrl(req.file,"contact",newContact._id, "stream");
@@ -111,7 +113,8 @@ class ContactMasterController {
       .populate("enteredBy")
       .populate("client")
       .populate("archeType")
-      .populate("relationshipDegree");
+      .populate("relationshipDegree")
+      .populate("territory")
 
     res.status(200).json({
       status: "success",
@@ -127,6 +130,7 @@ class ContactMasterController {
       // .populate("client")
       .populate("archeType")
       .populate("relationshipDegree")
+      .populate("territory")
      
 
     if (!contact) throw new ServerError("NotFound", "Contact");
