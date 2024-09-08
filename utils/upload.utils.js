@@ -411,10 +411,7 @@ export const sendBulkUploadResponse = async (
       EntityModel = BusinessDevelopmentModel;
       break;
   }
-  console.log("analysis length----", analysisResult);
-  console.log("check", check)
   if (!check && Object.keys(analysisResult).length === 0) {
-    console.log("finalizing-------")
     const entities = await EntityModel.insertMany(formattedData);
     const uniqueName = new Date().toLocaleString();
     const ids = entities.map((client) => client._id.toString());
