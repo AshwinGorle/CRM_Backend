@@ -54,6 +54,9 @@ const BusinessDevelopmentSchema = new mongoose.Schema({
         type : Number,
         default : 0
     },
+    comment : {
+      type : String
+    },
     Notes: [{
         type: String
     }]

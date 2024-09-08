@@ -82,6 +82,23 @@ class UploadController {
     await sendBulkUploadResponse(res, check, bulkData, formattedData, analysisResult, 'tender');
     return
   });
+  
+  static uploadBDInBulk = catchAsyncError(async (req, res)=>{
+    let { check } = req.query;
+    check = check === "true" ? true : false;
+    const stream = Readable.from(req.file.buffer.toString());
+    const bulkData = await csv().fromStream(stream);
+    console.log("BD bulk data ", bulkData);
+    const { formattedData, analysisResult } = await getFormattedData(
+      bulkData,
+      "businessDevelopment"
+    );
+    console.log("analysis result for bd---", analysisResult);
+    console.log("formatted data bd ---", formattedData);
+    await sendBulkUploadResponse(res, check, bulkData, formattedData, analysisResult, 'businessDevelopment');
+    return
+  })
+
 }
 
 export default UploadController;

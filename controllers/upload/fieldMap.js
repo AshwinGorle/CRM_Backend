@@ -87,3 +87,21 @@ export const clientFieldMapping = {
     "Explanation of Stage": "stageExplanation",
     "Submission Date": "submissionDate",
   };
+
+  export const bdFieldMap = {
+    "Entry Date": "entryDate",
+    "Entered by": "enteredBy",
+    "CLIENT NAME": "client",
+    "CONTACT NAME": "contact",
+    "HOW DID WE CONNECT WITH CLIENT" : "connectionSource",
+    "POTENTIAL PROJECT" : "potentialProject",
+    "SOLUTION" : "solution",
+    "INDUSTRY:" : "industry",
+    "TERRITORY" : "territory",
+    "SUBSOLUTION:" : "solution",
+    "SALES CHAMP" : "salesChamp",
+    "POTENTIAL TOPLINE" : "potentialTopLine",
+    "POTENTIAL OFFSETS" : "potentialOffset",
+    "POTENTIAL REVENUE" : "potentialRevenue",
+    "COMMENTS:" : "comment",
+  }

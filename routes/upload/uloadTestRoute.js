@@ -9,5 +9,6 @@ uploadRouter.post('/client', uploadStream.single('dataFile'), UploadController.u
 uploadRouter.post('/contact', uploadStream.single('dataFile'), UploadController.uploadContactInBulk);
 uploadRouter.post('/opportunity', uploadStream.single('dataFile'), UploadController.uploadOpportunityInBulk);
 uploadRouter.post('/tender', uploadStream.single('dataFile'), UploadController.uploadTenderInBulk);
+uploadRouter.post('/bd', uploadStream.single('dataFile'), UploadController.uploadBDInBulk);
 
 export default uploadRouter;
