@@ -76,6 +76,7 @@ class ContactMasterController {
       archeType,
       relationshipDegree,
       address,
+      country,
       memorableDetail,
       detailsConfirmation,
       notes,
@@ -151,7 +152,7 @@ class ContactMasterController {
     if (!contact) throw new ServerError("NotFound", "Contact");
     
     Object.keys(updateData).forEach((key) => {
-      if(key=='city' || key == 'state' || key =='country'){
+      if(key=='city' || key == 'state'){
         contact['address'][key] = updateData[key];
       }else{
         contact[key] = updateData[key];
