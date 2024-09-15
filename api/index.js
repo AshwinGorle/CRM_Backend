@@ -17,9 +17,10 @@ import uploadRouter from '../routes/upload/uloadTestRoute.js';
 import authRouter from '../routes/Authentication/AuthRoute.js';
 import userRouter from '../routes/Authentication/userRoute.js';
 import authenticateToken from '../middlewares/authenticateToken.js';
+import currencyRateRouter from '../routes/currency rates/currencyRateRoute.js';
 const app = express();
 const corsOptions = {
-    origin: ["https://crm-frontend-sigma-green.vercel.app", "https://crm-frontend-sigma-green.vercel.app","http://localhost:3000"],
+    origin: [ "https://crm-frontend-sigma-green.vercel.app","http://localhost:3000"],
     // origin: "*",
     methods : ["POST", "GET", "PUT", "DELETE"],
     credentials : true,
@@ -48,6 +49,7 @@ app.use('/opportunity', opportunityRouter);
 app.use('/registration', registrationMasterRouter);
 app.use('/configuration', configurationRoute);
 app.use('/upload', uploadRouter);
+app.use('/currency', currencyRateRouter);
 app.use(error);
 
 app.listen(1234, ()=>{
