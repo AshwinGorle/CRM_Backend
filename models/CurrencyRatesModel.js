@@ -8,5 +8,5 @@ const currencyRatesSchema = new mongoose.Schema({
     }
 },{timestamps : true})
 
-const currencyRatesModel = new mongoose.model("Note", currencyRatesSchema);
+const currencyRatesModel = new mongoose.model("CurrencyRates", currencyRatesSchema);
 export default currencyRatesModel;
