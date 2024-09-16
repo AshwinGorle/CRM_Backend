@@ -30,13 +30,9 @@ class CurrencyRateController {
   static getCurrencyRates = catchAsyncError(async (req, res) => {
     const allCurrencyRates = await currencyRatesModel.find({});
 
-    // console.log(currencyRates);
-    // return res.send({status : "success", message : "Currency fetched successfully", data : allCurrencyRates[0]});
-
     if (allCurrencyRates.length == 0) {
       console.log("Creating new currency");
       const newCurrencyRates = await this.updateCurrencyRates();
-      console.log("currency rates : ", newCurrencyRates);
       return res.send({
         status: "success",
         message: "Currency fetched successfully",

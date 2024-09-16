@@ -29,11 +29,15 @@ const RegistrationMasterSchema = new mongoose.Schema({
     websiteDetails: {
         username: {
             type: String,
-            required: true
+            // required: true
         },
         password: {
             type: String,
-            required: true
+            // required: true
+        },
+        link : {
+            type : String,
+            // required : true
         }
     },
     otherDetails: {

@@ -29,6 +29,7 @@ class RegistrationMasterController {
       !status ||
       !websiteDetails?.username ||
       !websiteDetails?.password ||
+      !websiteDetails?.link ||
       !primaryContact
     ) {
       return res
@@ -120,7 +121,11 @@ class RegistrationMasterController {
       throw new ServerError("NotFound", "RegistrationMaster");
 
     Object.keys(updateData).forEach((key) => {
-      registrationMaster[key] = updateData[key];
+      if(key == "link" || key == "username" || key == "password"){
+        registrationMaster.websiteDetails[key] = updateData[key];
+      }else{
+        registrationMaster[key] = updateData[key];
+      }
     });
 
     const updatedRegistrationMaster = await registrationMaster.save();
