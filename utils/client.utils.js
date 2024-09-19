@@ -46,7 +46,7 @@ export const checkForLifetimeValueAndUpdate = async (clientId, session)=>{
 
 export const parseContacts = async (relatedContacts, client)=>{
     if(relatedContacts){
-        // relatedContacts = formatArrayString(relatedContacts.toString());
+        
         console.log("relatedcn----", relatedContacts[0])
         // relatedContacts = JSON.parse(relatedContacts)
     }else { return }

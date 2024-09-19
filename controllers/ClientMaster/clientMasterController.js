@@ -12,7 +12,7 @@ import { getFilterOptions, getSortingOptions } from "../../utils/searchOptions.j
 
 class ClientMasterController {
 
-    static createClient = catchAsyncError(async (req, res, next, session) => {
+    static createClient = catchAsyncError(async (req, res) => {
         let {
             name,
             entryDate,
@@ -41,8 +41,6 @@ class ClientMasterController {
         // Validate required fields
         if (
             !name ||
-            
-          
             !industry ||
             !subIndustry ||
             !territory ||
@@ -95,7 +93,7 @@ class ClientMasterController {
         }
     
         // Save the instance after all modifications are done
-        await newClient.save({session});
+        await newClient.save();
         console.log("New client:", newClient);
     
         res.status(201).json({ status: 'success', message: "Client created successfully", data: newClient });
