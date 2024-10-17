@@ -26,19 +26,19 @@ const BusinessDevelopmentSchema = new mongoose.Schema({
     },
     solution: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "SolutionMaster"
+        ref: "Solution"
     },
     subSolution: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "SubSolutionMaster"
+        ref: "SubSolution"
     },
     industry: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "IndustryMaster"
+        ref: "Industry"
     },
     territory: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "TerritoryMaster"
+        ref: "Territory"
     },
     salesChamp: {
         type: mongoose.Schema.Types.ObjectId,

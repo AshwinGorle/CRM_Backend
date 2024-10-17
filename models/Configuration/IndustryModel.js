@@ -11,5 +11,5 @@ const IndustryMasterSchema = new mongoose.Schema({
     }
 })
 
-const IndustryMasterModel = new mongoose.model("IndustryMaster",IndustryMasterSchema);
+const IndustryMasterModel = new mongoose.model("Industry",IndustryMasterSchema);
 export default IndustryMasterModel;

@@ -1,12 +1,12 @@
 import { ServerError } from "../../utils/customErrorHandler.utils.js";
 import { catchAsyncError } from "../../middlewares/catchAsyncError.middleware.js";
-import SubSolutionMasterModel from "../../models/Configuration/SubSolutionMaster.js";
+import SubSolutionModel from "../../models/Configuration/SubSolutionModel.js";
 
-class SubSolutionMasterController {
+class SubSolutionController {
     // Create SolutionMaster
-    static createSubSolutionMaster = catchAsyncError(async (req, res, next) => {
+    static createSubSolution = catchAsyncError(async (req, res, next) => {
         const { label, description } = req.body;
-        const newSubSolutionMaster = await SubSolutionMasterModel.create({ label, description });
+        const newSubSolutionMaster = await SubSolutionModel.create({ label, description });
         res.status(201).json({
             status: 'success',
             message: 'Solution Master created successfully',
@@ -15,8 +15,8 @@ class SubSolutionMasterController {
     });
 
     // Get all SolutionMasters
-    static getAllSubSolutionMasters = catchAsyncError(async (req, res, next) => {
-        const subSolutionMasters = await SubSolutionMasterModel.find();
+    static getAllSubSolution = catchAsyncError(async (req, res, next) => {
+        const subSolutionMasters = await SubSolutionModel.find();
         res.status(200).json({
             status: 'success',
             message: 'All Solution Masters retrieved successfully',
@@ -25,9 +25,9 @@ class SubSolutionMasterController {
     });
 
     // Get SolutionMaster by ID
-    static getSubSolutionMasterById = catchAsyncError(async (req, res, next) => {
+    static getSubSolutionById = catchAsyncError(async (req, res, next) => {
         const { id } = req.params;
-        const solutionMaster = await SubSolutionMasterModel.findById(id);
+        const solutionMaster = await SubSolutionModel.findById(id);
         if (!solutionMaster) throw new ServerError("NotFound", "Solution Master");
         res.status(200).json({
             status: 'success',
@@ -37,10 +37,10 @@ class SubSolutionMasterController {
     });
 
     // Update SolutionMaster
-    static updateSubSolutionMaster = catchAsyncError(async (req, res, next) => {
+    static updateSubSolution = catchAsyncError(async (req, res, next) => {
         const { id } = req.params;
         const { label, description } = req.body;
-        const solutionMaster = await SubSolutionMasterModel.findById(id);
+        const solutionMaster = await SubSolutionModel.findById(id);
     
         if (!solutionMaster) throw new ServerError("NotFound", "Solution Master");
     
@@ -56,10 +56,10 @@ class SubSolutionMasterController {
     });
 
     // Delete SolutionMaster
-    static deleteSubSolutionMaster = catchAsyncError(async (req, res, next) => {
+    static deleteSubSolution = catchAsyncError(async (req, res, next) => {
         const { id } = req.params;
     
-        const solutionMaster = await SubSolutionMasterModel.findByIdAndDelete(id);
+        const solutionMaster = await SubSolutionModel.findByIdAndDelete(id);
     
         res.status(200).json({
             status: 'success',
@@ -69,4 +69,4 @@ class SubSolutionMasterController {
     });
 }
 
-export default SubSolutionMasterController;
+export default SubSolutionController;

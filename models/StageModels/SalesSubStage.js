@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const SalesSubStageMasterSchema = new mongoose.Schema({
+const SalesSubStageSchema = new mongoose.Schema({
     salesStage : {
         type : mongoose.Schema.Types.ObjectId,
         ref : 'SalesStageMaster',
@@ -14,8 +14,11 @@ const SalesSubStageMasterSchema = new mongoose.Schema({
     },
     message : {
         type : String
+    },
+    level : {
+        type : Number
     }
 })
 
-const SalesSubStageMasterModel = new mongoose.model("SalesSubStageMaster",SalesSubStageMasterSchema);
-export default SalesSubStageMasterModel;
+const SalesSubStageModel = new mongoose.model("SalesSubStage",SalesSubStageSchema);
+export default SalesSubStageModel;

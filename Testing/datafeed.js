@@ -1,7 +1,7 @@
-const local_url = "http://localhost:1234";
-import IndustryMasterController from "../controllers/Configuration/industryMasterController.js";
+const local_url = "http://localhost:4321";
+import IndustryController from "../controllers/Configuration/industryController.js";
 const Industry = [
-  "BFSI : Banking, financial services and Insurance ",
+  "BFSI : Banking, financial services and Insurance",
   "EUR : :  Energy Utility and Resources",
   "TMET : Telcom, Media, Entertainment and Technology",
   "HCLS : : Healthcare and Life Sciences",
@@ -82,64 +82,64 @@ const Solution = [
 ];
 
 const SalesStage = [
-  "Lead...",
-  "Prospecting..",
-  "Qualificatiion..",
-  "Proposal..",
-  "Followup..",
-  "Closing..",
+  "Lead",
+  "Prospecting",
+  "Qualification",
+  "Proposal",
+  "Followup",
+  "Closing",
 ];
 
 const SalesSubStage = [
-  "Lead - market Intelligence - 1",
-  "Lead - from the client - 1",
-  "Opportunity being probed - 1",
-  "Yet to connect with decision maker - 1",
-  "As of now, we are in the dark - 1",
-  "Some connect made with prospect - 2",
-  "Building Rapport with propect - 2",
-  "Prospect not favourably inclined yet  - 2",
-  "Well Positioned  - Prospect favourable - 2",
+  "Lead - market Intelligence",
+  "Lead - from the client",
+  "Opportunity being probed",
+  "Yet to connect with decision maker",
+  "As of now, we are in the dark",
+  "Some connect made with prospect",
+  "Building Rapport with propect",
+  "Prospect not favourably inclined yet ",
+  "Well Positioned  - Prospect favourable",
   "TOR / Demo..2",
-  "Project being defined / shaped by us - 2",
-  "Decided not to Pursue Further - 2",
-  "Under Finance Qualification - 3",
-  "Under Technical Qualification - 3",
-  "Under Expert Decision - 3",
-  "Not Qualified by us - 3",
-  "Proposal being developed - 4",
-  "Proposal not submitted - 4",
-  "Proposal Submitted - 4",
-  "Positive Feedback - 5",
-  "Under Active Negotiation - 5",
-  "Negative Feedback - Pricing Off Mark - 5",
-  "Negative Feedback - Technical Not Right  - 5",
-  "No insights or inputs yet - 5",
-  "Project On Hold - 6",
-  "Above budget - Will go for retender - 6",
-  "Management not convinced - retender - 6",
-  "Won - 6",
-  "Lost - 6",
-  "TOR / Demo..2",
-  "Project being defined / shaped by us - 2",
-  "Decided not to Pursue Further - 2",
-  "Under Finance Qualification - 3",
-  "Under Technical Qualification - 3",
-  "Under Expert Decision - 3",
-  "Not Qualified by us - 3",
-  "Proposal being developed - 4",
-  "Proposal not submitted - 4",
-  "Proposal Submitted - 4",
-  "Positive Feedback - 5",
-  "Under Active Negotiation - 5",
-  "Negative Feedback - Pricing Off Mark - 5",
-  "Negative Feedback - Technical Not Right  - 5",
-  "No insights or inputs yet - 5",
-  "Project On Hold - 6",
-  "Above budget - Will go for retender - 6",
-  "Management not convinced - retender - 6",
-  "Won - 6",
-  "Lost - 6",
+  "Project being defined / shaped by us",
+  "Decided not to Pursue Further",
+  "Under Finance Qualification",
+  "Under Technical Qualification",
+  "Under Expert Decision",
+  "Not Qualified by us",
+  "Proposal being developed",
+  "Proposal not submitted",
+  "Proposal Submitted",
+  "Positive Feedback",
+  "Under Active Negotiation",
+  "Negative Feedback - Pricing Off Mark",
+  "Negative Feedback - Technical Not Right ",
+  "No insights or inputs yet",
+  "Project On Hold",
+  "Above budget - Will go for retender",
+  "Management not convinced - retender",
+  "Won",
+  "Lost",
+  "TOR / Demo..",
+  "Project being defined / shaped by us",
+  "Decided not to Pursue Further",
+  "Under Finance Qualification",
+  "Under Technical Qualification",
+  "Under Expert Decision",
+  "Not Qualified by us",
+  "Proposal being developed",
+  "Proposal not submitted",
+  "Proposal Submitted",
+  "Positive Feedback",
+  "Under Active Negotiation",
+  "Negative Feedback - Pricing Off Mark",
+  "Negative Feedback - Technical Not Right",
+  "No insights or inputs yet",
+  "Project On Hold",
+  "Above budget - Will go for retender",
+  "Management not convinced - retender",
+  "Won",
+  "Lost",
 ];
 
 const TerritoryMaster = [
@@ -223,7 +223,7 @@ const Tender = {
 
 const Registration = {
   registrationStatus: [
-    "Yet t initiate registration",
+    "Yet initiate registration",
     "egistration in progess",
     "Stalled- not able toregister",
     "Registered",
@@ -280,7 +280,6 @@ const feedResource = async (route) => {
     case "registration-status":
       feedData = Registration.registrationStatus;
       break;
-
   }
 
   console.log("feedData : ", feedData);
@@ -291,27 +290,62 @@ const feedResource = async (route) => {
   }
   for (let i = 0; i < feedData.length; i++) {
     let salesState = null;
-    if(i>=0 && i<=4 ) salesState ="66bc90eefd162acc7a19276e"
-    if(i>=5 && i<=11 ) salesState ="66bc90eefd162acc7a192770"
-    if(i>=12 && i<=15 ) salesState ="66bc90eefd162acc7a192772"
-    if(i>=16 && i<=18 ) salesState ="66bc90eefd162acc7a192774"
-    if(i>=19 && i<=23 ) salesState ="66bc90eefd162acc7a192776"
-    if(i>=24 && i<=28 ) salesState ="66bc90eefd162acc7a192778"
-    if(i>=29 && i<=31 ) salesState ="66bc90eefd162acc7a192770"
-    if(i>=32 && i<=35 ) salesState ="66bc90eefd162acc7a192772"
-    if(i>=36 && i<=43 ) salesState ="66bc90eefd162acc7a192776"
-    if(i>=34 && i<=50 ) salesState ="66bc90eefd162acc7a192778"
+    let level = -1;
+    if (i >= 0 && i <= 4) {
+      salesState = "670e7df4f5e783c1a47cd48f";
+      level = 0;
+    }
+    if (i >= 5 && i <= 11) {
+      salesState = "670e7df4f5e783c1a47cd491";
+      level = 1;
+    }
+    if (i >= 12 && i <= 15) {
+      salesState = "670e7df4f5e783c1a47cd493";
+      level = 2;
+    }
+    if (i >= 16 && i <= 18) {
+      salesState = "670e7df5f5e783c1a47cd495";
+      level = 3;
+    }
+    if (i >= 19 && i <= 23) {
+      salesState = "670e7df5f5e783c1a47cd497";
+      level = 4;
+    }
+    if (i >= 24 && i <= 28) {
+      salesState = "670e7df5f5e783c1a47cd499";
+      level = 5;
+    }
+    if (i >= 29 && i <= 31) {
+      salesState = "670e7df4f5e783c1a47cd491";
+      level = 1;
+    }
+    if (i >= 32 && i <= 35) {
+      salesState = "670e7df4f5e783c1a47cd493";
+      level = 2;
+    }
+    if (i >= 36 && i <= 43) {
+      salesState = "670e7df5f5e783c1a47cd497";
+      level = 4;
+    }
+    if (i >= 34 && i <= 50) {
+      salesState = "670e7df5f5e783c1a47cd499";
+      level = 5;
+    }
     console.log(feedData[i]);
-    const result = await fetch(`${local_url}/configuration/${route}`, {
-    // const result = await fetch(`${local_url}/client/config/${route}`, {
-    // const result = await fetch(`${local_url}/contact/config/${route}`, {
-    // const result = await fetch(`${local_url}/tender/config/${route}`, {
-    // const result = await fetch(`${local_url}/registration/config/${route}`, {
+    // const result = await fetch(`${local_url}/configuration/${route}`, {
+      // const result = await fetch(`${local_url}/client/config/${route}`, {
+      // const result = await fetch(`${local_url}/contact/config/${route}`, {
+      // const result = await fetch(`${local_url}/tender/config/${route}`, {
+      const result = await fetch(`${local_url}/registration/config/${route}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ label: feedData[i], salesStage: salesState }),
+      body: JSON.stringify({
+        label: feedData[i],
+        level: level,
+        salesStage: salesState,
+      }),
     })
       .then((res) => res.json())
       .then((data) => console.log("created : ", data.data));
@@ -348,7 +382,7 @@ const deleteResource = async (route) => {
     });
 };
 
-// feedResource("sub-industry");
+// feedResource("industry");
 // deleteResource("sub-industry")
 // feedResource("sub-industry")
 // feedResource("solution");
@@ -358,9 +392,9 @@ const deleteResource = async (route) => {
 // deleteResource("sales-sub-stage");
 // feedResource("territory");
 
-//client
+// //client
 // feedResource("relationship-status");
-deleteResource("relationship-status");
+// // deleteResource("relationship-status");
 // feedResource("incorporation-type");
 // feedResource("classification");
 
@@ -372,4 +406,4 @@ deleteResource("relationship-status");
 // feedResource("stage");
 
 //registration
-// feedResource("registration-status");
+feedResource("registration-status");

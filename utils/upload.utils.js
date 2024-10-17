@@ -17,15 +17,15 @@ import ClassificationModel from "../models/ConfigModels/ClientMaster/Classificat
 import IncorporationTypeModel from "../models/ConfigModels/ClientMaster/IncorporationTypeModel.js";
 import RelationshipDegreeModel from "../models/ConfigModels/ContactMaster/RelationshipDegreeModel.js";
 import RelationshipStatusModel from "../models/ConfigModels/ClientMaster/RelationshipStatusModel.js";
-import IndustryMasterModel from "../models/Configuration/IndustryMaster.js";
-import SubIndustryMasterModel from "../models/Configuration/SubIndustryMaster.js";
-import TerritoryMasterModel from "../models/Configuration/TerretoryMaster.js";
+import IndustryMasterModel from "../models/Configuration/IndustryModel.js";
+import SubIndustryModel from "../models/Configuration/SubIndustryModel.js";
+import TerritoryModel from "../models/Configuration/TerritoryModel.js";
 import StaffModel from "../models/StaffModel.js";
 import UserModel from "../models/UserModel.js";
 import ArchetypeModel from "../models/ConfigModels/ContactMaster/ArchetypeModel.js";
-import SolutionMasterModel from "../models/Configuration/SolutionMaster.js";
-import SalesStageMasterModel from "../models/Configuration/SalesStageMaster.js";
-import SalesSubStageMasterModel from "../models/Configuration/SalesSubStageMaster.js";
+import SolutionMasterModel from "../models/Configuration/SolutionModel.js";
+import SalesStageModel from "../models/StageModels/SalesStageModel.js";
+import SalesSubStageModel from "../models/StageModels/SalesSubStage.js";
 import TenderStageModel from "../models/ConfigModels/TenderMaster/TenderStageModel.js";
 import BusinessDevelopmentModel from "../models/BusinessDevelopmentModel.js";
 
@@ -64,7 +64,7 @@ export const getFormattedData = async (bulkData, resource) => {
     }, {});
   });
 
-  const subIndustryMap = await SubIndustryMasterModel.find({}).then(
+  const subIndustryMap = await SubIndustryModel.find({}).then(
     (industries) => {
       return industries.reduce((acc, item) => {
         acc[item.label] = item._id;
@@ -73,7 +73,7 @@ export const getFormattedData = async (bulkData, resource) => {
     }
   );
 
-  const territoryMap = await TerritoryMasterModel.find({}).then(
+  const territoryMap = await TerritoryModel.find({}).then(
     (territories) => {
       return territories.reduce((acc, item) => {
         acc[item.label] = item._id;
@@ -110,7 +110,7 @@ export const getFormattedData = async (bulkData, resource) => {
     }, {});
   });
 
-  const salesStageMap = await SalesStageMasterModel.find({}).then(
+  const salesStageMap = await SalesStageModel.find({}).then(
     (salesStage) => {
       return salesStage.reduce((acc, item) => {
         acc[item.label] = item._id;
@@ -119,7 +119,7 @@ export const getFormattedData = async (bulkData, resource) => {
     }
   );
 
-  const salesSubStageMap = await SalesSubStageMasterModel.find({}).then(
+  const salesSubStageMap = await SalesSubStageModel.find({}).then(
     (salesSubStage) => {
       return salesSubStage.reduce((acc, item) => {
         acc[item.label] = item._id;

@@ -25,12 +25,12 @@ export const ClientMasterSchema = new mongoose.Schema({
     industry : {
         type : mongoose.Schema.Types.ObjectId,
         // required : true,
-        ref : "IndustryMaster"
+        ref : "Industry"
     },
     subIndustry : {
         type : mongoose.Schema.Types.ObjectId,
         // required : true,
-        ref : "SubIndustryMaster"
+        ref : "SubIndustry"
     },
     offering : {
         type : "String"
@@ -38,7 +38,7 @@ export const ClientMasterSchema = new mongoose.Schema({
     territory :{
         type : mongoose.Schema.Types.ObjectId,
         required : true,
-        ref : "TerritoryMaster"
+        ref : "Territory"
     },
     // pursuedOpportunityValue :{
     //     // Yet to derive

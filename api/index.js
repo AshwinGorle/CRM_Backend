@@ -52,6 +52,6 @@ app.use('/upload', uploadRouter);
 app.use('/currency', currencyRateRouter);
 app.use(error);
 
-app.listen(1234, ()=>{
-    console.log('Server is running on port port 1234.....');
+app.listen(4321, ()=>{
+    console.log('Server is running on port port 4321.....');
 })

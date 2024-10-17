@@ -82,7 +82,7 @@ const ContactMasterSchema = new mongoose.Schema({
   territory :{
     type : mongoose.Schema.Types.ObjectId,
     required : true,
-    ref : "TerritoryMaster"
+    ref : "Territory"
   },
   country : {
     type : String

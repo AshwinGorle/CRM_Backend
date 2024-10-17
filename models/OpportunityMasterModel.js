@@ -32,11 +32,11 @@ const OpportunityMasterSchema = new mongoose.Schema({
   },
   solution: {
     type: mongoose.Schema.Types.ObjectId,
-    ref : "SolutionMaster"
+    ref : "Solution"
   },
   subSolution: {
     type: mongoose.Schema.Types.ObjectId,
-    ref : "SubSolutionMaster"
+    ref : "SubSolution"
   },
   salesChamp: {
     type: mongoose.Schema.Types.ObjectId,
@@ -45,11 +45,11 @@ const OpportunityMasterSchema = new mongoose.Schema({
   /////////////
   salesStage : {
     type: mongoose.Schema.Types.ObjectId,
-    ref : "SalesStageMaster"
+    ref : "SalesStage"
   },
   salesSubStage : {
     type: mongoose.Schema.Types.ObjectId,
-    ref : "SalesSubStageMaster"
+    ref : "SalesSubStage"
   },
   stageClarification : {
     type: String,
@@ -88,7 +88,12 @@ const OpportunityMasterSchema = new mongoose.Schema({
   expectedSales : {
     type : Number,
     default : 0
-  }
+  },
+  stageHistory : [{
+    type : mongoose.Schema.Types.ObjectId,
+    ref : "StageHistory",
+    default : []
+  }]
   //confidence * totalRevenue
 
 });

@@ -3,6 +3,7 @@ import UserModel from '../models/UserModel.js';
 
 const authenticateToken = async (req, res, next) => {
   const token = req.cookies.token;
+  //  return next();
   // console.log("cookie----",req.cookies);
   if (!token) {
     return res.status(401).json({ status: 'failed', message: 'Access denied. No token provided.' });

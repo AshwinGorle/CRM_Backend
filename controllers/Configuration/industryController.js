@@ -1,10 +1,10 @@
 import { ServerError } from "../../utils/customErrorHandler.utils.js";
 import { catchAsyncError } from "../../middlewares/catchAsyncError.middleware.js";
-import IndustryMasterModel from "../../models/Configuration/IndustryMaster.js";
+import IndustryMasterModel from "../../models/Configuration/IndustryModel.js";
 
-class IndustryMasterController {
+class IndustryController {
     // Create IndustryMaster
-    static createIndustryMaster = catchAsyncError(async (req, res, next) => {
+    static createIndustry = catchAsyncError(async (req, res, next) => {
         const { label , description } = req.body;
         const newIndustryMaster = await IndustryMasterModel.create({ label, description });
         res.status(201).json({
@@ -15,7 +15,7 @@ class IndustryMasterController {
     });
 
     // Get all IndustryMasters
-    static getAllIndustryMasters = catchAsyncError(async (req, res, next) => {
+    static getAllIndustry = catchAsyncError(async (req, res, next) => {
         const industryMasters = await IndustryMasterModel.find();
         res.status(200).json({
             status: 'success',
@@ -25,7 +25,7 @@ class IndustryMasterController {
     });
 
     // Get IndustryMaster by ID
-    static getIndustryMasterById = catchAsyncError(async (req, res, next) => {
+    static getIndustryById = catchAsyncError(async (req, res, next) => {
         const { id } = req.params;
         const industryMaster = await IndustryMasterModel.findById(id);
         if (!industryMaster) throw new ServerError("NotFound", "Industry Master");
@@ -37,7 +37,7 @@ class IndustryMasterController {
     });
 
     // Update IndustryMaster
-    static updateIndustryMaster = catchAsyncError(async (req, res, next) => {
+    static updateIndustry = catchAsyncError(async (req, res, next) => {
         const { id } = req.params;
         const { name, description } = req.body;
         const industryMaster = await IndustryMasterModel.findById(id);
@@ -56,7 +56,7 @@ class IndustryMasterController {
     });
 
     // Delete IndustryMaster
-    static deleteIndustryMaster = catchAsyncError(async (req, res, next) => {
+    static deleteIndustry = catchAsyncError(async (req, res, next) => {
         const { id } = req.params;
     
         const industryMaster = await IndustryMasterModel.findByIdAndDelete(id);
@@ -69,4 +69,4 @@ class IndustryMasterController {
     });
 }
 
-export default IndustryMasterController;
+export default IndustryController;

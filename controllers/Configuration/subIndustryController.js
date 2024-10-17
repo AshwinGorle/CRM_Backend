@@ -1,12 +1,12 @@
 import { ServerError } from "../../utils/customErrorHandler.utils.js";
 import { catchAsyncError } from "../../middlewares/catchAsyncError.middleware.js";
-import SubIndustryMasterModel from "../../models/Configuration/SubIndustryMaster.js";
+import SubIndustryModel from "../../models/Configuration/SubIndustryModel.js";
 
-class SubIndustryMasterController {
+class SubIndustryController {
     // Create SubIndustryMaster
-    static createSubIndustryMaster = catchAsyncError(async (req, res, next) => {
+    static createSubIndustry = catchAsyncError(async (req, res, next) => {
         const { label, description } = req.body;
-        const newSubIndustryMaster = await SubIndustryMasterModel.create({ label, description });
+        const newSubIndustryMaster = await SubIndustryModel.create({ label, description });
         res.status(201).json({
             status: 'success',
             message: 'Sub-Industry Master created successfully',
@@ -15,8 +15,8 @@ class SubIndustryMasterController {
     });
 
     // Get all SubIndustryMasters
-    static getAllSubIndustryMasters = catchAsyncError(async (req, res, next) => {
-        const subIndustryMasters = await SubIndustryMasterModel.find();
+    static getAllSubIndustry = catchAsyncError(async (req, res, next) => {
+        const subIndustryMasters = await SubIndustryModel.find();
         res.status(200).json({
             status: 'success',
             message: 'All Sub-Industry Masters retrieved successfully',
@@ -25,9 +25,9 @@ class SubIndustryMasterController {
     });
 
     // Get SubIndustryMaster by ID
-    static getSubIndustryMasterById = catchAsyncError(async (req, res, next) => {
+    static getSubIndustryById = catchAsyncError(async (req, res, next) => {
         const { id } = req.params;
-        const subIndustryMaster = await SubIndustryMasterModel.findById(id);
+        const subIndustryMaster = await SubIndustryModel.findById(id);
         if (!subIndustryMaster) throw new ServerError("NotFound", "Sub-Industry Master");
         res.status(200).json({
             status: 'success',
@@ -37,10 +37,10 @@ class SubIndustryMasterController {
     });
 
     // Update SubIndustryMaster
-    static updateSubIndustryMaster = catchAsyncError(async (req, res, next) => {
+    static updateSubIndustry = catchAsyncError(async (req, res, next) => {
         const { id } = req.params;
         const { name, description } = req.body;
-        const subIndustryMaster = await SubIndustryMasterModel.findById(id);
+        const subIndustryMaster = await SubIndustryModel.findById(id);
     
         if (!subIndustryMaster) throw new ServerError("NotFound", "Sub-Industry Master");
     
@@ -56,10 +56,10 @@ class SubIndustryMasterController {
     });
 
     // Delete SubIndustryMaster
-    static deleteSubIndustryMaster = catchAsyncError(async (req, res, next) => {
+    static deleteSubIndustry = catchAsyncError(async (req, res, next) => {
         const { id } = req.params;
     
-        const subIndustryMaster = await SubIndustryMasterModel.findByIdAndDelete(id);
+        const subIndustryMaster = await SubIndustryModel.findByIdAndDelete(id);
     
         res.status(200).json({
             status: 'success',
@@ -69,4 +69,4 @@ class SubIndustryMasterController {
     });
 }
 
-export default SubIndustryMasterController;
+export default SubIndustryController;

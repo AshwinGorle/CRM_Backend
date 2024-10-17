@@ -1,11 +1,11 @@
-import SalesSubStageMasterModel from "../../models/Configuration/SalesSubStageMaster.js";
+import SalesSubStageModel from "../../models/StageModels/SalesSubStage.js";
 import { catchAsyncError } from "../../middlewares/catchAsyncError.middleware.js";
 import { ServerError } from "../../utils/customErrorHandler.utils.js";
-class SalesSubStageMasterController {
+class SalesSubStageController {
     // Create SalesSubStageMaster
-    static createSalesSubStageMaster = catchAsyncError(async (req, res, next) => {
-        const { label, salesStage, description } = req.body;
-        const newSalesSubStageMaster = await SalesSubStageMasterModel.create({ label, salesStage, description });
+    static createSalesSubStage = catchAsyncError(async (req, res, next) => {
+        const { label, salesStage, description, level } = req.body;
+        const newSalesSubStageMaster = await SalesSubStageModel.create({ label, salesStage, description, level });
         res.status(201).json({
             status: 'success',
             message: 'Sales Sub-Stage Master created successfully',
@@ -14,8 +14,8 @@ class SalesSubStageMasterController {
     });
 
     // Get all SalesSubStageMasters
-    static getAllSalesSubStageMasters = catchAsyncError(async (req, res, next) => {
-        const salesSubStageMasters = await SalesSubStageMasterModel.find().populate('salesStage');
+    static getAllSalesSubStage = catchAsyncError(async (req, res, next) => {
+        const salesSubStageMasters = await SalesSubStageModel.find().populate('salesStage');
         res.status(200).json({
             status: 'success',
             message: 'All Sales Sub-Stage Masters retrieved successfully',
@@ -24,9 +24,9 @@ class SalesSubStageMasterController {
     });
 
     // Get SalesSubStageMaster by ID
-    static getSalesSubStageMasterById = catchAsyncError(async (req, res, next) => {
+    static getSalesSubStageById = catchAsyncError(async (req, res, next) => {
         const { id } = req.params;
-        const salesSubStageMaster = await SalesSubStageMasterModel.findById(id).populate('salesStage');
+        const salesSubStageMaster = await SalesSubStageModel.findById(id).populate('salesStage');
         if (!salesSubStageMaster) throw new ServerError("NotFound", "Sales Sub-Stage Master");
         res.status(200).json({
             status: 'success',
@@ -36,10 +36,10 @@ class SalesSubStageMasterController {
     });
 
     // Update SalesSubStageMaster
-    static updateSalesSubStageMaster = catchAsyncError(async (req, res, next) => {
+    static updateSalesSubStage = catchAsyncError(async (req, res, next) => {
         const { id } = req.params;
         const { name, salesStage, description } = req.body;
-        const salesSubStageMaster = await SalesSubStageMasterModel.findById(id);
+        const salesSubStageMaster = await SalesSubStageModel.findById(id);
     
         if (!salesSubStageMaster) throw new ServerError("NotFound", "Sales Sub-Stage Master");
     
@@ -56,10 +56,10 @@ class SalesSubStageMasterController {
     });
 
     // Delete SalesSubStageMaster
-    static deleteSalesSubStageMaster = catchAsyncError(async (req, res, next) => {
+    static deleteSalesSubStage = catchAsyncError(async (req, res, next) => {
         const { id } = req.params;
     
-        const salesSubStageMaster = await SalesSubStageMasterModel.findByIdAndDelete(id);
+        const salesSubStageMaster = await SalesSubStageModel.findByIdAndDelete(id);
     
         res.status(200).json({
             status: 'success',
@@ -70,4 +70,4 @@ class SalesSubStageMasterController {
 }
 
 // export default SalesSubStageMasterControllere
-export default SalesSubStageMasterController;
+export default SalesSubStageController;

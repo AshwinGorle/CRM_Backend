@@ -34,7 +34,7 @@ export const error = (err, req, res, next)=>{
     //     err.message = 'Please check your connectivity!'
     // }
 
-    res.status(err.statusCode).json({
+    return res.status(err.statusCode).json({
         success: false,
         message: err.message
     })
