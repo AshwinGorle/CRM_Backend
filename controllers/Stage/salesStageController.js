@@ -40,6 +40,9 @@ class SalesStageController {
          const currentOppHistory = opportunity.stageHistory.sort((a, b)=> a.stage.level - b.stage.level); // sorted
          const n = currentOppHistory.length;
          const lastHistory = currentOppHistory[n-1];
+         
+         //update date must be greater than or equal to last history entry date
+         if(updateDate < lastHistory.entryDate) throw new ClientError("handleForwardStageChange", errors.stage.INVALID_UPDATE_DATE);
 
          //Inserting exit date in current last history
          console.log("last history : ", lastHistory)

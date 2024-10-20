@@ -16,6 +16,7 @@ import {
 } from "../../utils/searchOptions.js";
 import StageHistoryController from "../History/stageHistoryController.js";
 import SalesStageController from "../Stage/salesStageController.js";
+import SalesSubStageController from "../Stage/salesSubStageController.js";
 class OpportunityController {
   static createOpportunity = catchAsyncError(
     async (req, res, next, session) => {
@@ -188,9 +189,15 @@ class OpportunityController {
       .populate("stageHistory")
       .populate({
         path: "stageHistory",
-        populate: { path: "stage" } // populate stage inside stageHistory
-       })
-       .exec();
+        populate: [
+          { path: "stage" }, // Populate the stage inside stageHistory
+          {
+            path: "subStageHistory",
+            populate: { path: "subStage" } // Populate subStage inside subStageHistory
+          }
+        ]
+      })
+      .exec();
     // .populate("client");
 
     if (!opportunity) throw new ServerError("NotFound", "Opportunity");
@@ -221,6 +228,13 @@ class OpportunityController {
         const updateDate  = updateData.updateDate ? new Date(updateData.updateDate) : Date.now();
         await SalesStageController.handleStageChange(updateData.salesStage, opportunity._id,  updateDate, session )
       }
+      
+      if(updateData.salesSubStage){
+        console.log("Entering in sub stage change");
+        const updateDate  = updateData.updateDate ? new Date(updateData.updateDate) : Date.now();
+        await SalesSubStageController.handleSubStageChange(updateData.salesSubStage, opportunity._id, updateDate, session)
+      }
+
 
       // If update contains revenue handle it
       if (updateData.revenue) {

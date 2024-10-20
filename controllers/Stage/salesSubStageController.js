@@ -1,7 +1,46 @@
 import SalesSubStageModel from "../../models/StageModels/SalesSubStage.js";
 import { catchAsyncError } from "../../middlewares/catchAsyncError.middleware.js";
-import { ServerError } from "../../utils/customErrorHandler.utils.js";
+import { ClientError, ServerError } from "../../utils/customErrorHandler.utils.js";
+import OpportunityMasterModel from "../../models/OpportunityMasterModel.js";
+import { error } from "../../middlewares/error.middleware.js";
+import { errors } from "../../utils/responseMessages.js";
+import SalesStageModel from "../../models/StageModels/SalesStageModel.js";
+import SubStageHistoryModel from "../../models/HistoryModels/SubSageHistoryModel.js";
+import StageHistoryModel from "../../models/HistoryModels/StageHistoryModel.js";
 class SalesSubStageController {
+
+    static handleSubStageChange = async (newSalesSubStageId, opportunityId, updateDate, session)=>{
+        // Gathering required info
+        const allSalesSubStages = await SalesSubStageModel.find({});
+        const allSalesStages = await SalesStageModel.find({});
+        
+        // Validate provided subStageId 
+        if(!allSalesSubStages.find(subStage=>subStage._id.toString() == newSalesSubStageId)) throw new ClientError ("handleSubStageChange",errors.subStage.INVALID_STAGE);
+        const opportunity = await OpportunityMasterModel.findById(opportunityId).populate("stageHistory stageHistory.stage").session(session);
+        
+        // If Already in the given sub stage do nothing
+        if(newSalesSubStageId == opportunity.salesSubStage.toString()){
+            console.log("No sub stage change needed");
+            return
+        }
+
+        // Validating subStage with the Stage
+        const subStage = allSalesSubStages.find((subStage)=>subStage._id == newSalesSubStageId)
+        if(subStage.salesStage.toString() != opportunity.salesStage.toString()) throw new ClientError("handleSubStageChange", errors.subStage.MISMATCHED_STAGE);
+        
+        //Creating new subStageHistory
+        const newSubStageHistory = new SubStageHistoryModel({subStage : newSalesSubStageId, entryDate : updateDate});
+        await newSubStageHistory.save({session});
+
+        //Pushing this subStage history in corresponding stage history of opportunity
+        const stageHistoryToUpdate = opportunity.stageHistory.find(stageHistory=>stageHistory.stage._id.toString() == subStage.salesStage.toString());
+        if(!stageHistoryToUpdate) throw new ServerError("handleSubStageChange", "stage history not fount for the curresponding sub Stage History");
+        await StageHistoryModel.findByIdAndUpdate(stageHistoryToUpdate._id, {$push : {subStageHistory : newSubStageHistory._id }}, {session : session});
+
+        console.log("Sub stage update successful");
+
+    }
+
     // Create SalesSubStageMaster
     static createSalesSubStage = catchAsyncError(async (req, res, next) => {
         const { label, salesStage, description, level } = req.body;

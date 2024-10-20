@@ -18,6 +18,7 @@ import authRouter from '../routes/Authentication/AuthRoute.js';
 import userRouter from '../routes/Authentication/userRoute.js';
 import authenticateToken from '../middlewares/authenticateToken.js';
 import currencyRateRouter from '../routes/currency rates/currencyRateRoute.js';
+import dashboardRouter from '../routes/dashboard/dashboardRoute.js';
 const app = express();
 const corsOptions = {
     origin: [ "https://crm-frontend-sigma-green.vercel.app","http://localhost:3000"],
@@ -50,6 +51,7 @@ app.use('/registration', registrationMasterRouter);
 app.use('/configuration', configurationRoute);
 app.use('/upload', uploadRouter);
 app.use('/currency', currencyRateRouter);
+app.use('/dashboards', dashboardRouter);
 app.use(error);
 
 app.listen(4321, ()=>{

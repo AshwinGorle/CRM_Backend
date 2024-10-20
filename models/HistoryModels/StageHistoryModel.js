@@ -16,6 +16,10 @@ const stageHistorySchema = new mongoose.Schema({
     exitDate : {
         type : Date,
     },
+    subStageHistory : [{
+        type : mongoose.Schema.Types.ObjectId,
+        ref : "SubStageHistory"
+    }]
 
 });
 
