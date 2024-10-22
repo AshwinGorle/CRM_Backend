@@ -14,5 +14,5 @@ const homePage = (req,res)=>{
         return res.send({ message: 'Internal Server Error', error });
       }
 }
-
+  
 export default homePage;

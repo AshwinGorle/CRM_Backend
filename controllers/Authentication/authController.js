@@ -183,7 +183,7 @@ class AuthController {
 
   static login = async (req, res) => {
     const { email, password } = req.body;
-
+    console.log("login CALLED");
     if (!email || !password) {
       return res
         .status(400)
@@ -192,6 +192,8 @@ class AuthController {
 
     try {
       const user = await UserModel.findOne({ email });
+      console.log("user" , user)
+      console.log("password from frontend : ", password)
       if (!user || !(await bcrypt.compare(password, user.password))) {
         return res
           .status(400)
