@@ -36,7 +36,7 @@ app.use(express.urlencoded({extended : false}));
 app.use(express.json());
 app.use(cookieParser());
 const PORT = process.env.PORT || 5000;
-const DB_URL = process.env.DATABASE_URL; 
+const DB_URL = process.env.DATABASE2_URL; 
 connectDb(DB_URL);
 
 app.get('/',homePage);
