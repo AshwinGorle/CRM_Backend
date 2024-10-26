@@ -40,7 +40,7 @@ class AuthController {
       password,
       password_confirmation,
       gender,
-      role = "viewer",
+      role,
       city = "N/A",
       state = "N/A",
       country = "N/A",

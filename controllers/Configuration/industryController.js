@@ -39,12 +39,12 @@ class IndustryController {
     // Update IndustryMaster
     static updateIndustry = catchAsyncError(async (req, res, next) => {
         const { id } = req.params;
-        const { name, description } = req.body;
+        const { label, description } = req.body;
         const industryMaster = await IndustryMasterModel.findById(id);
     
         if (!industryMaster) throw new ServerError("NotFound", "Industry Master");
     
-        industryMaster.name = name;
+        industryMaster.label = label;
         industryMaster.description = description;
         const updatedIndustryMaster = await industryMaster.save();
     

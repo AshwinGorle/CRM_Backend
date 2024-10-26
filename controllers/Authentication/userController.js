@@ -22,7 +22,7 @@ class UserController {
     }
 
     const totalCount = await UserModel.countDocuments(); // Ensure this is awaited
-    const users = await UserModel.find().limit(limit).skip(skip).select("-password");
+    const users = await UserModel.find().populate("role").limit(limit).skip(skip).select("-password");
 
     return res.status(200).json({
       status: "success",
