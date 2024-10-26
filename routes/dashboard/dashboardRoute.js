@@ -1,5 +1,5 @@
 import { Router } from "express";
-import pipeViewRouter from "./pipeviewRoute.js";
+import pipeViewRouter from "./pipeViewRoute.js";
 
 const dashboardRouter = Router();
 
