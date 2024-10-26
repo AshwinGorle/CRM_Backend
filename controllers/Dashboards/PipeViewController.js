@@ -243,7 +243,19 @@ class PipeViewController {
           as: "clientDetails"
         }
       },
+
+      
       { $unwind: { path: "$clientDetails", preserveNullAndEmptyArrays: true } }, // Unwind the clientDetails array, allow empty if no client
+      
+      // {
+      //   $lookup: {
+      //     from: "contactmasters", // Assuming the collection name is 'clientmasters'
+      //     localField: "clientDetails.relatedContacts", // The 'client' field inside the opportunity details
+      //     foreignField: "_id", // _id field of the ClientMaster model
+      //     as: "contactDetails"
+      //   }
+      // },
+      // { $unwind: { path: "$contactDetails", preserveNullAndEmptyArrays: true } }, // Unwind the clientDetails array, allow empty if no client
 
       { $sort: { "stageDetails.level": -1 } }, // Sort by stage level in descending order
 
