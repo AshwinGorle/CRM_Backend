@@ -183,9 +183,16 @@
 import { catchAsyncError } from "../../middlewares/catchAsyncError.middleware.js";
 import StageHistoryModel from "../../models/HistoryModels/StageHistoryModel.js";
 import OpportunityMasterModel from "../../models/OpportunityMasterModel.js";
+import { getFilterOptions } from "../../utils/searchOptions.js";
+
 class PipeViewController {
   static getPipeView = catchAsyncError(async (req, res, next) => {
     console.log("pipe view");
+
+    // Get the filter options from query parameters
+    const filterOptions = getFilterOptions(req.query);
+    console.log("filter", filterOptions);
+
     const { particularDate } = req.body; // Expected to be a timestamp
     if (!particularDate) throw new Error("Particular date is required.");
     const targetDate = new Date(particularDate);
@@ -199,6 +206,21 @@ class PipeViewController {
       followup: [],
       closing: []
     };
+
+    // Build filter conditions dynamically based on filterOptions
+    const filterConditions = [];
+    if (filterOptions.territory) {
+      filterConditions.push({ "opportunityDetails.territory": { $in: filterOptions.territory } });
+    }
+    if (filterOptions.subIndustry) {
+      filterConditions.push({ "opportunityDetails.subIndustry": { $in: filterOptions.subIndustry } });
+    }
+    if (filterOptions.industry) {
+      filterConditions.push({ "opportunityDetails.industry": { $in: filterOptions.industry } });
+    }
+    if (filterOptions.enteredBy) {
+      filterConditions.push({ "opportunityDetails.enteredBy": { $in: filterOptions.enteredBy } });
+    }
 
     // Query the StageHistoryModel for opportunities active on the given date
     const opportunitiesInStages = await StageHistoryModel.aggregate([
@@ -224,6 +246,10 @@ class PipeViewController {
         }
       },
       { $unwind: "$opportunityDetails" }, // Deconstruct the opportunityDetails array
+      
+      // Apply the filter conditions if there are any
+      ...(filterConditions.length > 0 ? [{ $match: { $and: filterConditions } }] : []),
+      
       {
         $lookup: {
           from: "salesstages", // Assuming the collection name is 'salesstages'
@@ -243,20 +269,8 @@ class PipeViewController {
           as: "clientDetails"
         }
       },
-
-      
       { $unwind: { path: "$clientDetails", preserveNullAndEmptyArrays: true } }, // Unwind the clientDetails array, allow empty if no client
       
-      // {
-      //   $lookup: {
-      //     from: "contactmasters", // Assuming the collection name is 'clientmasters'
-      //     localField: "clientDetails.relatedContacts", // The 'client' field inside the opportunity details
-      //     foreignField: "_id", // _id field of the ClientMaster model
-      //     as: "contactDetails"
-      //   }
-      // },
-      // { $unwind: { path: "$contactDetails", preserveNullAndEmptyArrays: true } }, // Unwind the clientDetails array, allow empty if no client
-
       { $sort: { "stageDetails.level": -1 } }, // Sort by stage level in descending order
 
       {
@@ -266,31 +280,7 @@ class PipeViewController {
           opportunity: { $first: "$opportunityDetails" }, // Pick the corresponding opportunity details
           client: { $first: "$clientDetails" } // Include the client details
         }
-      },
-      // {
-      //   $project: {
-      //     _id: 1,
-      //     "opportunity.projectName": 1, // Include any fields you want in the final response
-      //     "opportunity.solution": 1,
-      //     "opportunity.subSolution": 1,
-      //     "opportunity.salesChamp": 1,
-      //     "opportunity.salesStage": 1,
-      //     "opportunity.salesSubStage": 1,
-      //     "opportunity.stageClarification": 1,
-      //     "opportunity.salesTopLine": 1,
-      //     "opportunity.offsets": 1,
-      //     "opportunity.totalRevenue": 1,
-      //     "opportunity.confidenceLevel": 1,
-      //     "opportunity.expectedSales": 1,
-      //     "opportunity.revenue": 1,
-      //     client: { // Include the client fields
-      //       _id: 1,
-      //       name: 1,
-      //       industry: 1
-      //     },
-      //     stage: 1 // Include stage details
-      //   }
-      // }
+      }
     ]);
 
     // Iterate through the results and map them to the corresponding stages
@@ -331,3 +321,4 @@ class PipeViewController {
 }
 
 export default PipeViewController;
+

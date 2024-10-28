@@ -8,7 +8,11 @@ const SolutionSchema = new mongoose.Schema({
     description : {
         type : String
     }
-})
+},
+{
+    timestamps: true
+}
+)
 
 const SolutionModel = new mongoose.model("Solution",SolutionSchema);
 export default SolutionModel;

@@ -8,6 +8,8 @@ const SubSolutionSchema = new mongoose.Schema({
     description : {
         type : String
     }
+},    {
+    timestamps: true
 })
 
 const SubSolutionModel = new mongoose.model("SubSolution",SubSolutionSchema);

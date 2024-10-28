@@ -213,7 +213,8 @@ class OpportunityController {
     async (req, res, next, session) => {
       const { id } = req.params;
       let updateData = req.body;
-      console.log("updated op dta", updateData);
+      console.log("updated op data : -----", updateData);
+     
       let opportunity = await OpportunityMasterModel.findById(id);
       if (!opportunity) throw new ServerError("Update Opportunity", errors.opportunity.NOT_FOUND);
 

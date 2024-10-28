@@ -8,6 +8,8 @@ const SubIndustrySchema = new mongoose.Schema({
     description : {
         type : String
     }
+},    {
+    timestamps: true
 })
 
 const SubIndustryModel = new mongoose.model("SubIndustry",SubIndustrySchema);

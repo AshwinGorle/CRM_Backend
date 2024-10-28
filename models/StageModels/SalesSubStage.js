@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const SalesSubStageSchema = new mongoose.Schema({
     salesStage : {
         type : mongoose.Schema.Types.ObjectId,
-        ref : 'SalesStageMaster',
+        ref : 'SalesStage',
     },
     label : {
         type : String,

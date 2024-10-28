@@ -9,6 +9,8 @@ const IndustryMasterSchema = new mongoose.Schema({
     description : {
         type : String
     }
+},     {
+    timestamps: true
 })
 
 const IndustryMasterModel = new mongoose.model("Industry",IndustryMasterSchema);

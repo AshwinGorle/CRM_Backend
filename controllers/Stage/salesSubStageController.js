@@ -54,6 +54,7 @@ class SalesSubStageController {
 
     // Get all SalesSubStageMasters
     static getAllSalesSubStage = catchAsyncError(async (req, res, next) => {
+        console.log("get all sub stage called")
         const salesSubStageMasters = await SalesSubStageModel.find().populate('salesStage');
         res.status(200).json({
             status: 'success',

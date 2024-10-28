@@ -180,11 +180,10 @@ class RoleController {
 
     static updateRole = catchAsyncError(async (req, res, next) => {
         const id = req.params.id;
-        const updateData = req.body;
-        const role = await RoleModel.findById(id);
-
-        // update logic
-
+        const {roleName} = req.body;
+        console.log("role name", roleName);
+        console.log("role id" , id);
+        const role = await RoleModel.findByIdAndUpdate(id, {name : roleName});
         res.status(201).json({
             status: "success",
             message: "Role updated successfully",

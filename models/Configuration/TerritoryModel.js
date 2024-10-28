@@ -8,6 +8,8 @@ const TerritorySchema = new mongoose.Schema({
     description : {
         type : String
     }
+},    {
+    timestamps: true
 })
 
 const TerritoryModel = new mongoose.model("Territory",TerritorySchema);
