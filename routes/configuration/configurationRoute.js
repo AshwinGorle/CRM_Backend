@@ -6,8 +6,9 @@ import solutionMasterRouter from "./solutionRoute.js";
 import subSolutionRouter from "./subSolutionRoute.js";
 import subIndustryMasterRouter from "./subIndustryRouter.js";
 import territoryRouter from "./territoryRoute.js";
+import ConfigurationController from "../../controllers/Configuration/configurationController.js";
 const configurationRoute = Router();
-
+configurationRoute.use("/count", ConfigurationController.getCount);
 configurationRoute.use('/industry', industryRouter);
 configurationRoute.use('/sub-industry', subIndustryMasterRouter);
 configurationRoute.use('/sales-stage', salesStateRouter);

@@ -182,7 +182,6 @@
 
 import { catchAsyncError } from "../../middlewares/catchAsyncError.middleware.js";
 import StageHistoryModel from "../../models/HistoryModels/StageHistoryModel.js";
-import OpportunityMasterModel from "../../models/OpportunityMasterModel.js";
 import { getFilterOptions } from "../../utils/searchOptions.js";
 
 class PipeViewController {
@@ -190,7 +189,7 @@ class PipeViewController {
     console.log("pipe view");
 
     // Get the filter options from query parameters
-    const filterOptions = getFilterOptions(req.query);
+    const filterOptions =  getFilterOptions(req.query);
     console.log("filter", filterOptions);
 
     const { particularDate } = req.body; // Expected to be a timestamp
@@ -206,21 +205,6 @@ class PipeViewController {
       followup: [],
       closing: []
     };
-
-    // Build filter conditions dynamically based on filterOptions
-    const filterConditions = [];
-    if (filterOptions.territory) {
-      filterConditions.push({ "opportunityDetails.territory": { $in: filterOptions.territory } });
-    }
-    if (filterOptions.subIndustry) {
-      filterConditions.push({ "opportunityDetails.subIndustry": { $in: filterOptions.subIndustry } });
-    }
-    if (filterOptions.industry) {
-      filterConditions.push({ "opportunityDetails.industry": { $in: filterOptions.industry } });
-    }
-    if (filterOptions.enteredBy) {
-      filterConditions.push({ "opportunityDetails.enteredBy": { $in: filterOptions.enteredBy } });
-    }
 
     // Query the StageHistoryModel for opportunities active on the given date
     const opportunitiesInStages = await StageHistoryModel.aggregate([
@@ -247,8 +231,16 @@ class PipeViewController {
       },
       { $unwind: "$opportunityDetails" }, // Deconstruct the opportunityDetails array
 
-      // Apply the filter conditions if there are any
-      ...(filterConditions.length > 0 ? [{ $match: { $and: filterConditions } }] : []),
+      // Lookup to populate client details
+      {
+        $lookup: {
+          from: "clientmasters", // Assuming the collection name is 'clientmasters'
+          localField: "opportunityDetails.client", // The 'client' field inside the opportunity details
+          foreignField: "_id", // _id field of the ClientMaster model
+          as: "clientDetails"
+        }
+      },
+      { $unwind: { path: "$clientDetails", preserveNullAndEmptyArrays: true } }, // Unwind clientDetails array
 
       {
         $lookup: {
@@ -259,17 +251,6 @@ class PipeViewController {
         }
       },
       { $unwind: "$stageDetails" }, // Deconstruct the stageDetails array
-      
-      // Lookup to populate client details
-      {
-        $lookup: {
-          from: "clientmasters", // Assuming the collection name is 'clientmasters'
-          localField: "opportunityDetails.client", // The 'client' field inside the opportunity details
-          foreignField: "_id", // _id field of the ClientMaster model
-          as: "clientDetails"
-        }
-      },
-      { $unwind: { path: "$clientDetails", preserveNullAndEmptyArrays: true } }, // Unwind the clientDetails array, allow empty if no client
 
       // Lookup to populate enteredBy details
       {
@@ -280,7 +261,7 @@ class PipeViewController {
           as: "enteredByDetails"
         }
       },
-      { $unwind: { path: "$enteredByDetails", preserveNullAndEmptyArrays: true } }, // Unwind the enteredByDetails array, allow empty if no user
+      { $unwind: { path: "$enteredByDetails", preserveNullAndEmptyArrays: true } }, // Unwind enteredByDetails array
 
       { $sort: { "stageDetails.level": -1 } }, // Sort by stage level in descending order
 
@@ -295,11 +276,46 @@ class PipeViewController {
       }
     ]);
 
-    // Iterate through the results and map them to the corresponding stages
+    // Helper function to filter opportunities based on criteria
+    // Apply filter logic
+// Apply filter logic
+const applyFilters = (opportunities) => {
+  return opportunities.filter((record) => {
+      const { client } = record;
+      console.log("industry array : ", filterOptions?.industry)
+      console.log("opp industry : ", client?.industry)
+      // Check if client exists before checking its properties
+      const isTerritoryValid = !filterOptions.territory || (client && client.territory && filterOptions.territory.includes(client.territory.toString()));
+      const isIndustryValid = !filterOptions.industry || (client && client.industry && filterOptions.industry.includes(client.industry.toString()));
+      const isSubIndustryValid = !filterOptions.subIndustry || (client && client.subIndustry && filterOptions.subIndustry.includes(client.subIndustry.toString()));
+
+      // Check enteredBy and solution in the main record
+      const isEnteredByValid = !filterOptions.enteredBy || (record.enteredBy && filterOptions.enteredBy.includes(record.enteredBy._id.toString()));
+      const isSolutionValid = !filterOptions.solution || (solution && filterOptions.solution.includes(record.solution.toString()));
+      console.log("isIndustryValid : ", isIndustryValid);
+      console.log("isSubIndustryValid : ", isSubIndustryValid);
+      console.log("isEnteredByValid : ", isEnteredByValid);
+      console.log("isSolutionValid : ", isSolutionValid);
+      console.log("Filter result : ", isTerritoryValid && isIndustryValid && isSubIndustryValid && isEnteredByValid && isSolutionValid)
+      return isTerritoryValid && isIndustryValid && isSubIndustryValid && isEnteredByValid && isSolutionValid;
+  });
+};
+
+
+
+    // Iterate through results and map them to corresponding stages
     opportunitiesInStages.forEach((record) => {
       const { stage, opportunity, client, enteredBy } = record;
-      opportunity.client = client; // Attach client details to the opportunity
-      opportunity.enteredBy = enteredBy; // Attach enteredBy details to the opportunity
+
+      // Attach client and enteredBy details to the opportunity
+      opportunity.client = client;
+      opportunity.enteredBy = {
+        avatar: enteredBy?.avatar,
+        firstName: enteredBy?.firstName,
+        lastName: enteredBy?.lastName,
+        _id : enteredBy?._id,
+      };
+
       switch (stage.label.toLowerCase()) {
         case "lead":
           pipeView.lead.push(opportunity);
@@ -324,6 +340,15 @@ class PipeViewController {
       }
     });
 
+    // Apply filters to each stage array
+    pipeView.lead = applyFilters(pipeView.lead);
+    pipeView.prospect = applyFilters(pipeView.prospect);
+    pipeView.qualification = applyFilters(pipeView.qualification);
+    pipeView.proposal = applyFilters(pipeView.proposal);
+    pipeView.followup = applyFilters(pipeView.followup);
+    pipeView.closing = applyFilters(pipeView.closing);
+
+    console.log("Final results : ", pipeView);
     // Return the pipe view
     res.status(200).json({
       status: "success",

@@ -1,8 +1,9 @@
 export const getFilterOptions = (query)=>{
-  const {territory, subIndustry, industry, enteredBy, client} =  query;
+  const {territory, subIndustry, industry, enteredBy, client, solution} =  query;
   console.log("territory : ", territory)
   console.log("industry : , ",industry)
   console.log("subIndustry ; ",subIndustry)
+  console.log("solution ; ",solution)
   let filterOptions = {};
   if(territory && territory != ""){
     filterOptions.territory = territory;
@@ -12,6 +13,9 @@ export const getFilterOptions = (query)=>{
   }
   if(industry && industry != ""){
     filterOptions.industry = industry;
+  }
+  if(solution && solution != ""){
+    filterOptions.solution = solution;
   }
   if(enteredBy && enteredBy != ""){
     filterOptions.enteredBy = enteredBy
