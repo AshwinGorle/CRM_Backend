@@ -246,10 +246,10 @@ class PipeViewController {
         }
       },
       { $unwind: "$opportunityDetails" }, // Deconstruct the opportunityDetails array
-      
+
       // Apply the filter conditions if there are any
       ...(filterConditions.length > 0 ? [{ $match: { $and: filterConditions } }] : []),
-      
+
       {
         $lookup: {
           from: "salesstages", // Assuming the collection name is 'salesstages'
@@ -270,7 +270,18 @@ class PipeViewController {
         }
       },
       { $unwind: { path: "$clientDetails", preserveNullAndEmptyArrays: true } }, // Unwind the clientDetails array, allow empty if no client
-      
+
+      // Lookup to populate enteredBy details
+      {
+        $lookup: {
+          from: "users", // Assuming the collection name is 'users'
+          localField: "opportunityDetails.enteredBy", // The 'enteredBy' field inside the opportunity details
+          foreignField: "_id", // _id field of the User model
+          as: "enteredByDetails"
+        }
+      },
+      { $unwind: { path: "$enteredByDetails", preserveNullAndEmptyArrays: true } }, // Unwind the enteredByDetails array, allow empty if no user
+
       { $sort: { "stageDetails.level": -1 } }, // Sort by stage level in descending order
 
       {
@@ -278,15 +289,17 @@ class PipeViewController {
           _id: "$opportunity", // Group by opportunity to remove duplicates
           stage: { $first: "$stageDetails" }, // Pick the stage with the highest level
           opportunity: { $first: "$opportunityDetails" }, // Pick the corresponding opportunity details
-          client: { $first: "$clientDetails" } // Include the client details
+          client: { $first: "$clientDetails" }, // Include the client details
+          enteredBy: { $first: "$enteredByDetails" } // Include the enteredBy details
         }
       }
     ]);
 
     // Iterate through the results and map them to the corresponding stages
     opportunitiesInStages.forEach((record) => {
-      const { stage, opportunity, client } = record;
+      const { stage, opportunity, client, enteredBy } = record;
       opportunity.client = client; // Attach client details to the opportunity
+      opportunity.enteredBy = enteredBy; // Attach enteredBy details to the opportunity
       switch (stage.label.toLowerCase()) {
         case "lead":
           pipeView.lead.push(opportunity);
@@ -321,4 +334,3 @@ class PipeViewController {
 }
 
 export default PipeViewController;
-
