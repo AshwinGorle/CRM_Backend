@@ -18,10 +18,10 @@ class ConfigurationController{
             message: 'Config Counts fetched successfully',
             data: {
                 industry : industryCount,
-                subIndustry : subIndustryCount,
+                "sub-industry" : subIndustryCount,
                 solution : solutionCount,
                 territory : territoryCount,
-                subSolution : subSolutionCount
+                "sub-solution" : subSolutionCount
             },
         });
     });
